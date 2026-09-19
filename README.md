@@ -4,6 +4,11 @@
 >
 > 100% self-contained, zero-dependency, single-file HTML application built for local desktop browsers and Obsidian vaults.
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-4f8cff?style=for-the-badge&logo=github)](https://cj-1981.github.io/paneldeck/)
+[![CI Status](https://img.shields.io/github/actions/workflow/status/CJ-1981/paneldeck/deploy-pages.yml?branch=main&style=for-the-badge&label=Deployment)](https://github.com/CJ-1981/paneldeck/actions)
+
+🌐 **Try it Live in your Browser:** [https://cj-1981.github.io/paneldeck/](https://cj-1981.github.io/paneldeck/)
+
 ---
 
 ## ✨ Overview
@@ -12,25 +17,24 @@
 
 Featuring a **Bento Glassmorphism** design system, PanelDeck pairs translucent frosted glass materials and atmospheric ambient mesh glows with deep productivity controls: spotlight search hotkeys, automatic tag aggregation, a dedicated pinned shelf, dual density modes, and drag-and-drop organization.
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  PanelDeck              [ Search panels or Google... (Ctrl+K) ]   [+ Add] 🔲 ☀️ │
-├─────────────────────────────────────────────────────────────────────────────┤
-│  [All 12]  [Web 6]  [Folders 4]  [Apps 2]  │  [#work 5]  [#dev 4]  [#lotus 3]   │
-├─────────────────────────────────────────────────────────────────────────────┤
-│  📌 Pinned Panels (3)                                                       │
-│  ┌───────────────────────┐ ┌───────────┐ ┌───────────┐                      │
-│  │ Lotus Tech Portal     │ │ GitHub    │ │ Obsidian  │                      │
-│  │ (Wide 2×1)            │ │ (1×1)     │ │ (1×1)     │                      │
-│  └───────────────────────┘ └───────────┘ └───────────┘                      │
-├─────────────────────────────────────────────────────────────────────────────┤
-│  All Panels                                                                 │
-│  ┌───────────┐ ┌───────────────────────┐ ┌───────────┐ ┌──────────────────┐ │
-│  │ Jira      │ │ Scripts & Tools       │ │ Terminal  │ │ Notes & Research │ │
-│  │ (1×1)     │ │ (Wide 2×1)            │ │ (1×1)     │ │ (Tall 1×2)       │ │
-│  └───────────┘ └───────────────────────┘ └───────────┘ └──────────────────┘ │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+---
+
+## 📸 Screenshots
+
+### Bento Grid Mosaic View (Dark Theme)
+*Showcasing fluid spotlight search, pinned shelf, dynamic category filter pills, and custom bento card aspect ratios.*
+
+![PanelDeck Bento Grid View](docs/screenshots/bento-grid.png)
+
+### Compact List View (High Density)
+*Ideal for sidebar embeds, narrow monitors, or minimalists who prefer rapid scanning with identical column alignment across all 8 card styles.*
+
+![PanelDeck Compact List View](docs/screenshots/compact-list.png)
+
+### Light Theme Glassmorphism
+*Crisp daylight aesthetic featuring frosted specular highlights and soft colored ambient shadows.*
+
+![PanelDeck Light Theme](docs/screenshots/light-mode.png)
 
 ---
 
@@ -111,15 +115,21 @@ Featuring a **Bento Glassmorphism** design system, PanelDeck pairs translucent f
 
 ## 🚀 Usage & Installation
 
-### Option 1: Direct Desktop Browser
-1. Save `PanelDeck.html` to any local directory (e.g. `C:\Users\YourName\Documents\dashboard\PanelDeck.html`).
+### Option 1: Instant Live Web Mode (No Setup)
+Launch the dashboard directly in your browser:
+👉 **[https://cj-1981.github.io/paneldeck/](https://cj-1981.github.io/paneldeck/)**
+
+All your dashboard panels, category chips, pinned items, and color themes persist automatically in your browser's private `localStorage`.
+
+### Option 2: Direct Single-File Local HTML
+1. Download or save `PanelDeck.html` to any local directory (e.g. `C:\Users\YourName\Documents\dashboard\PanelDeck.html`).
 2. Double-click the file to open it in Chrome, Firefox, Edge, or Brave.
 3. Bookmark the tab or set it as your browser startpage!
 
 > [!NOTE]
-> When opened via `file:///`, modern browsers permit opening local folder paths directly in Windows File Explorer or Finder.
+> When opened via local `file:///`, modern browsers permit opening local folder paths directly in Windows File Explorer or Finder.
 
-### Option 2: Embedded in Obsidian
+### Option 3: Embedded in Obsidian
 PanelDeck was designed specifically for Obsidian vaults. You can embed it into any Obsidian note using an iframe:
 
 ```markdown

@@ -36,21 +36,22 @@ body::before{content:'';position:fixed;inset:0;background:
 
 
 /* ---------- header ---------- */
-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+header{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:14px;flex-wrap:nowrap;
   padding:14px 24px;background:rgba(11,15,23,.75);
   backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);
   border-bottom:1px solid var(--border)}
 html[data-theme="light"] header{background:rgba(244,246,251,.82)}
-.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.brand{display:flex;align-items:center;gap:11px;min-width:0;flex:0 0 auto}
 .logo{width:38px;height:38px;flex:none;border-radius:12px;background:linear-gradient(135deg,#4f8cff,#8b5cf6);display:grid;place-items:center;color:#fff;box-shadow:0 4px 16px var(--accent-glow);border:1px solid rgba(255,255,255,.2)}
 #appTitle{font-size:18px;font-weight:700;letter-spacing:-.02em;outline:none;border-radius:8px;padding:3px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:36vw;transition:background .15s}
 #appTitle:hover,#appTitle:focus{background:var(--card)}
-.toolbar{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap}
+.toolbar{display:flex;align-items:center;gap:8px;margin-left:0;flex:1 1 auto;justify-content:flex-end;flex-wrap:nowrap;min-width:0}
+.toolbar > *{flex-shrink:0}
 #count{font-size:12px;font-weight:600;color:var(--muted);margin-right:4px;padding:3px 8px;border-radius:999px;background:var(--card-glass);border:1px solid var(--border)}
-.search{position:relative;display:flex;align-items:center}
+.search{position:relative;display:flex;align-items:center;flex:1 1 auto;max-width:640px;min-width:180px;width:auto}
 .search .ic-lens{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--muted);pointer-events:none;transition:color .18s}
-.search input{width:380px;max-width:48vw;padding:9.5px 114px 9.5px 38px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--text);outline:none;font-size:13.5px;font-family:inherit;transition:width .22s cubic-bezier(.16,1,.3,1),border-color .18s,box-shadow .18s;box-shadow:var(--specular)}
-.search input:focus{width:460px;border-color:var(--accent);box-shadow:var(--specular),0 0 16px var(--accent-glow)}
+.search input{width:100%;max-width:100%;padding:9.5px 116px 9.5px 38px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--text);outline:none;font-size:13.5px;font-family:inherit;transition:border-color .18s,box-shadow .18s;box-shadow:var(--specular)}
+.search input:focus{border-color:var(--accent);box-shadow:var(--specular),0 0 16px var(--accent-glow)}
 .search input:focus ~ .ic-lens{color:var(--accent)}
 .hotkey-badge{position:absolute;right:82px;top:50%;transform:translateY(-50%);font-size:10px;font-family:inherit;font-weight:700;padding:2px 5px;border-radius:5px;background:var(--card2);color:var(--muted);border:1px solid var(--border2);pointer-events:none;transition:opacity .15s;line-height:1}
 .search input:focus ~ .hotkey-badge,.search input:not(:placeholder-shown) ~ .hotkey-badge{opacity:0}
@@ -163,14 +164,14 @@ main{position:relative;z-index:1;width:100%;max-width:1360px;margin:0 auto;paddi
 .bento-grid.list-view .card .tools button{background:var(--card2);border:1px solid var(--border)}
 .bento-grid.list-view .card .tools button:hover{background:var(--card);border-color:var(--border2)}
 @media(max-width:980px){
-  .search input{width:280px;padding-right:110px}
-  .search input:focus{width:340px}
   .bento-grid.list-view .card .card-tags{display:none!important}
   .bento-grid.list-view .card .plink{flex:0 0 140px;width:140px}
 }
 @media(max-width:768px){
-  .search input{width:190px;padding-right:56px}
-  .search input:focus{width:220px}
+  header{flex-wrap:wrap}
+  .toolbar{flex-wrap:wrap}
+  .search{min-width:140px}
+  .search input{padding-right:56px}
   .hotkey-badge{display:none}
   .search-google-btn span{display:none}
   .search-google-btn{padding:0 5px}
