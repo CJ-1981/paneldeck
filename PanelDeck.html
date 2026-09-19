@@ -545,14 +545,17 @@ footer{position:relative;z-index:1;text-align:center;color:var(--muted);font-siz
       <button type="button" class="btn iconbtn" id="closeHelp" title="Close" aria-label="Close help dialog"><svg class="ic"><use href="#i-x"/></svg></button>
     </h2>
     <ul>
-      <li><b>Add a panel:</b> click "Add panel", fill in a name, a link or folder path, and optionally a picture, size, style and accent color.</li>
+      <li><b>Add a panel:</b> click "Add panel", fill in a name, a link or folder path, tags, and optionally a picture, size, style and accent color.</li>
       <li><b>Open a panel:</b> click anywhere on the card. Website URLs open in a new tab; local folder paths open in your system file browser.</li>
+      <li><b>Spotlight search:</b> press <kbd>Ctrl+K</kbd> or <kbd>/</kbd> to instantly search panels, or hit Enter to search Google directly.</li>
+      <li><b>Pinned shelf:</b> click the pin icon on any card's hover toolbar to pin it to the dedicated top shelf.</li>
+      <li><b>Tags &amp; filter bar:</b> add comma-separated tags to panels (e.g. <code>work, dev</code>). The top filter bar automatically generates one-click filter chips for all active tags and types.</li>
+      <li><b>View density:</b> switch between responsive Bento Grid and high-density Compact List view using the layout button in the header.</li>
+      <li><b>Rearrange &amp; quick actions:</b> drag cards to reorder them. Hover over any card to reveal the frosted action pill: pin/unpin, cycle size (<kbd>1×1</kbd> &rarr; <kbd>2×1</kbd> &rarr; <kbd>1×2</kbd> &rarr; <kbd>2×2</kbd>), edit, or delete.</li>
       <li><b>Local folders:</b> work when this HTML file is opened directly from your computer (double-click it). Browsers block local paths on hosted web pages.</li>
-      <li><b>Rearrange:</b> drag cards to reorder them (mouse or trackpad). The layout button on a card cycles its size; the pencil button opens the editor where you can change style, picture and color.</li>
-      <li><b>Renaming:</b> click the dashboard title at the top left to rename it.</li>
-      <li><b>Backups:</b> everything is stored automatically in this browser (localStorage). Use Export / Import to save or move your dashboard to another computer.</li>
-      <li><b>Styles:</b> eight card layouts — image top, image side, overlay, compact, tile, glass, banner and note. Mix them with the four sizes freely; the grid adapts.</li>
-      <li><b>Run file mode:</b> set the click action to "Run file" to launch executables and shortcuts (.exe, .lnk, .bat...) with your operating system. Windows needs a one-time helper — see below. Documents and folders do not need it.</li>
+      <li><b>Styles &amp; sizes:</b> eight card layouts — image top, image side, overlay, compact, tile, glass, banner and note. Mix them with the four sizes freely; the grid adapts.</li>
+      <li><b>Backups &amp; title:</b> click the dashboard title to rename it. Everything is stored automatically in localStorage. Use Export / Import to save or move your dashboard.</li>
+      <li><b>Run file mode:</b> set the click action to "Run file" to launch executables and shortcuts (.exe, .lnk, .bat...) with your operating system. Windows needs a one-time helper — see below.</li>
     </ul>
     <div class="runhelp">
       <b>Run file mode — optional Windows helper (one-time setup)</b>

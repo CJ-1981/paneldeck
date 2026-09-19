@@ -10,6 +10,9 @@
 
 **Spec:** `docs/superpowers/specs/2026-09-19-paneldeck-modern-bento-glassmorphism-design.md`
 
+
+> **Status: COMPLETED & MERGED TO MASTER** (Commits: 6596ec through 36b827, merged in fast-forward to master)
+
 ## Global Constraints
 - Single-file delivery in `PanelDeck.html`. Zero external runtime or stylesheet dependencies (no npm, no external CDNs).
 - 100% backward compatible with existing localStorage key (`paneldeck.v1`) and JSON backups.
@@ -26,7 +29,7 @@
 - Produces: Global CSS variables (`--bg`, `--bg2`, `--card`, `--card-glass`, `--border-glass`, `--specular`, `--shadow-glass`, `--radius-bento`), atmospheric background auras, and modern typographic rules.
 - Consumes: None.
 
-- [ ] **Step 1: Update design tokens and base styles in `<style>`**
+- [x] **Step 1: Update design tokens and base styles in `<style>`**
   Add modern frosted glass custom properties, enhanced atmospheric radial aura meshes, smooth scrollbar, and modern typography rules in `PanelDeck.html`:
   ```css
   :root {
@@ -77,7 +80,7 @@
   }
   ```
 
-- [ ] **Step 2: Verify styles syntax and theme token rendering**
+- [x] **Step 2: Verify styles syntax and theme token rendering**
   Inspect `PanelDeck.html` in browser or headless node test to ensure CSS parsing has no syntax errors and custom properties resolve cleanly.
 
 ---
@@ -91,10 +94,10 @@
 - Produces: `#search` with `Ctrl+K` and `/` hotkeys, clear button `#searchClear`, Google fallback `#searchGoogleBtn`, `#viewToggle` button for Grid/List switching.
 - Consumes: Global CSS tokens.
 
-- [ ] **Step 1: Update `<header>` markup in `PanelDeck.html`**
+- [x] **Step 1: Update `<header>` markup in `PanelDeck.html`**
   Add hotkey indicator badge (`<kbd class="hotkey-badge">Ctrl K</kbd>`), View Switcher button (`#viewToggleBtn` with grid and list SVG icons), and modernized button styles.
 
-- [ ] **Step 2: Add Spotlight hotkey and view toggle handlers in JS**
+- [x] **Step 2: Add Spotlight hotkey and view toggle handlers in JS**
   Implement the global shortcut listener for `Ctrl+K` (or `Cmd+K`) and `/` (when not typing in an input) to focus search:
   ```javascript
   document.addEventListener('keydown', function(e) {
@@ -113,7 +116,7 @@
   ```
   Implement `#viewToggleBtn` click handler to toggle `state.viewMode = state.viewMode === 'grid' ? 'list' : 'grid'` and call `save()` and `render()`.
 
-- [ ] **Step 3: Test header interactions**
+- [x] **Step 3: Test header interactions**
   Verify pressing `Ctrl+K` or `/` focuses search; verify `Escape` clears and blurs search; verify `#viewToggleBtn` switches view mode.
 
 ---
@@ -127,7 +130,7 @@
 - Produces: `state.filter = { type: 'all', tag: null }`, `renderFilterBar()`, and dynamic tag calculation.
 - Consumes: `state.panels`.
 
-- [ ] **Step 1: Add Filter Bar container to HTML and CSS**
+- [x] **Step 1: Add Filter Bar container to HTML and CSS**
   Add `<nav class="filter-bar" id="filterBar"></nav>` directly between `<header>` and `<main>`. Add styles for frosted glass filter pills with active glowing accent states:
   ```css
   .filter-bar {
@@ -168,7 +171,7 @@
   }
   ```
 
-- [ ] **Step 2: Implement tag aggregation and filter logic in JS**
+- [x] **Step 2: Implement tag aggregation and filter logic in JS**
   Add dynamic computation of tag frequencies and panel types:
   ```javascript
   function getFilterStats() {
@@ -188,7 +191,7 @@
   ```
   Update `visible()` to filter by active type and active tag in addition to search query.
 
-- [ ] **Step 3: Test filter pill selection and counts**
+- [x] **Step 3: Test filter pill selection and counts**
   Verify clicking `Web` shows only web panels; clicking a tag pill filters to tagged panels; clicking active pill clears filter; verify counts are accurate.
 
 ---
@@ -202,7 +205,7 @@
 - Produces: `<section id="pinnedShelf">`, `#grid` rendering, and compact list layout support.
 - Consumes: `state.panels`, `state.viewMode`, `state.filter`.
 
-- [ ] **Step 1: Update main layout HTML and CSS**
+- [x] **Step 1: Update main layout HTML and CSS**
   Update `<main>` in `PanelDeck.html` to include the pinned shelf section:
   ```html
   <main>
@@ -221,7 +224,7 @@
   ```
   Add CSS for `.bento-grid.list-view` and compact list row styling (`.card.view-list`).
 
-- [ ] **Step 2: Update render() to partition pinned vs unpinned panels and handle list mode**
+- [x] **Step 2: Update render() to partition pinned vs unpinned panels and handle list mode**
   Update `render()` in JS:
   ```javascript
   function render() {
@@ -247,7 +250,7 @@
   }
   ```
 
-- [ ] **Step 3: Test pinned shelf and list mode toggle**
+- [x] **Step 3: Test pinned shelf and list mode toggle**
   Pin a panel; verify it appears in `#pinnedShelf`; unpin it; verify `#pinnedShelf` hides; toggle List view; verify both sections render as high-density list rows.
 
 ---
@@ -261,13 +264,13 @@
 - Produces: Floating frosted glass toolbar (`data-act="pin"`, `data-act="size"`, `data-act="edit"`, `data-act="del"`), tags rendering on cards, and dynamic `--paccent` hover aura.
 - Consumes: Panel object fields (`p.pinned`, `p.tags`, `p.accent`, etc.).
 
-- [ ] **Step 1: Add SVG Pin icon symbol to `<svg>` library**
+- [x] **Step 1: Add SVG Pin icon symbol to `<svg>` library**
   Add `#i-pin` SVG symbol to the embedded icon `<defs>`:
   ```html
   <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 17v5M5 9l4-4 8 8-4 4M9 5l2-2 4 4-2 2M15 11l4 4-2 2-4-4"/></symbol>
   ```
 
-- [ ] **Step 2: Modernize card CSS and floating toolbar pill**
+- [x] **Step 2: Modernize card CSS and floating toolbar pill**
   Style `.card` with `backdrop-filter: blur(16px)`, `box-shadow: var(--specular)`, and smooth spring transitions. Style `.tools` as a floating frosted glass pill:
   ```css
   .tools {
@@ -311,12 +314,12 @@
   }
   ```
 
-- [ ] **Step 3: Update `cardHTML()` to generate tags and pin button**
+- [x] **Step 3: Update `cardHTML()` to generate tags and pin button**
   In `cardHTML(p)`:
   - Add pin action button to `.tools` with `.pin-active` class when `p.pinned` is true.
   - Add tag chips container inside `.body`: `(p.tags && p.tags.length ? '<div class="card-tags">' + p.tags.map(function(t){ return '<span class="card-tag">#'+esc(t)+'</span>'; }).join('') + '</div>' : '')`.
 
-- [ ] **Step 4: Add pin click action handler in grid event listener**
+- [x] **Step 4: Add pin click action handler in grid event listener**
   Add handler for `act === 'pin'`:
   ```javascript
   if (act === 'pin') {
@@ -329,7 +332,7 @@
   }
   ```
 
-- [ ] **Step 5: Test card interactions and layout styles**
+- [x] **Step 5: Test card interactions and layout styles**
   Verify clicking pin toggles pinned state; verify hover glow radiates `--paccent`; verify tags appear on card; verify size cycle and delete work smoothly.
 
 ---
@@ -343,13 +346,13 @@
 - Produces: Tag input with preview chips, pin checkbox, visual size selector, visual layout selector, and real-time live preview.
 - Consumes: Active panel data.
 
-- [ ] **Step 1: Redesign modal HTML in `PanelDeck.html`**
+- [x] **Step 1: Redesign modal HTML in `PanelDeck.html`**
   - Add `<div class="field"><label for="fTags">Tags (comma-separated)</label><input id="fTags" type="text" placeholder="e.g. work, lotus, tools"><div class="tag-chips-preview" id="tagChipsPreview"></div></div>`.
   - Add `<label class="pin-check-label"><input type="checkbox" id="fPinned"> Pin this panel to the top shelf</label>`.
   - Upgrade size selector buttons with mini SVG glyphs.
   - Upgrade style selector buttons with mini diagram previews for all 8 layout styles.
 
-- [ ] **Step 2: Implement modal CSS transitions and visual picker styling**
+- [x] **Step 2: Implement modal CSS transitions and visual picker styling**
   Add scale + backdrop-blur entrance animation for `.overlay` and `.modal`:
   ```css
   .overlay {
@@ -369,12 +372,12 @@
   }
   ```
 
-- [ ] **Step 3: Update `openModal()`, live preview, and form submission**
+- [x] **Step 3: Update `openModal()`, live preview, and form submission**
   - Populate `#fTags` with `(p.tags || []).join(', ')` and `#fPinned.checked = !!p.pinned`.
   - Add live input listener on `#fTags` to render preview chips dynamically.
   - In form submit handler, save `pinned: $('#fPinned').checked` and `tags: $('#fTags').value.split(',').map(function(s){ return s.trim(); }).filter(Boolean)`.
 
-- [ ] **Step 4: Test modal editing flow**
+- [x] **Step 4: Test modal editing flow**
   Open modal for an existing panel; change tags, toggle pin, pick a new size and style using visual pickers; save and verify panel updates instantly on dashboard.
 
 ---
@@ -388,7 +391,7 @@
 - Produces: Robust backward compatibility for legacy data, updated rich default examples, and flawless end-to-end operation.
 - Consumes: Existing localStorage data.
 
-- [ ] **Step 1: Update `normalize()` for automatic schema migration**
+- [x] **Step 1: Update `normalize()` for automatic schema migration**
   Ensure any existing saved card without `pinned` or `tags` is cleanly sanitized:
   ```javascript
   p.pinned = Boolean(p.pinned);
@@ -396,10 +399,10 @@
   ```
   Ensure `state.viewMode = state.viewMode === 'list' ? 'list' : 'grid'`.
 
-- [ ] **Step 2: Update `loadExamples()` with modern tags, layouts, and pinned panel**
+- [x] **Step 2: Update `loadExamples()` with modern tags, layouts, and pinned panel**
   Update the example panels to showcase the new features (e.g. GitHub tagged `#dev, #code` and pinned; Wikipedia tagged `#reference`; Obsidian/Local folder tagged `#notes, #work`).
 
-- [ ] **Step 3: Comprehensive verification test**
+- [x] **Step 3: Comprehensive verification test**
   Run complete functional validation:
   1. Boot up page: verify atmospheric auras, header, filter bar, and grid render cleanly with zero JS console errors.
   2. Test CRUD: Add panel with tags, edit, pin, resize, and delete.
