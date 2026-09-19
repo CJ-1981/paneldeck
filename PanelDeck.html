@@ -84,16 +84,39 @@ html[data-theme="light"] .filter-bar{background:rgba(244,246,251,.75)}
 .filter-pill .count{font-size:10px;padding:1px 5px;border-radius:999px;background:var(--card2);color:inherit;font-weight:700}
 
 /* ---------- main / grid ---------- */
-
-main{position:relative;z-index:1;width:100%;max-width:1280px;margin:0 auto;padding:26px 22px 60px;flex:1}
-#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));grid-auto-rows:215px;gap:16px}
+main{position:relative;z-index:1;width:100%;max-width:1360px;margin:0 auto;padding:24px clamp(16px,3vw,32px) 60px;flex:1}
+.bento-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));grid-auto-rows:215px;gap:18px}
 .sz-wide{grid-column:span 2}
 .sz-tall{grid-row:span 2}
 .sz-lg{grid-column:span 2;grid-row:span 2}
-@media(max-width:540px){#grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:440px){#grid{grid-template-columns:1fr}.sz-wide,.sz-lg{grid-column:span 1}}
+@media(max-width:560px){.bento-grid{grid-template-columns:repeat(2,1fr)}.sz-wide,.sz-lg{grid-column:span 2}}
+@media(max-width:440px){.bento-grid{grid-template-columns:1fr}.sz-wide,.sz-lg{grid-column:span 1}}
+
+/* pinned shelf */
+.shelf-header{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.shelf-title{font-size:13px;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:6px;color:var(--text)}
+.shelf-count{font-size:11px;font-weight:700;color:var(--accent);padding:1px 7px;border-radius:999px;background:color-mix(in srgb,var(--accent) 15%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent)}
+.shelf-divider{height:1px;background:var(--border);margin:24px 0 20px}
+
+/* compact list view */
+.bento-grid.list-view{display:flex;flex-direction:column;gap:8px;grid-auto-rows:auto}
+.bento-grid.list-view .card{grid-column:auto!important;grid-row:auto!important;min-height:56px;height:auto;flex-direction:row;align-items:center;padding:8px 14px;border-radius:12px}
+.bento-grid.list-view .card .media{flex:0 0 38px;width:38px;height:38px;border-radius:9px;margin:0 12px 0 0}
+.bento-grid.list-view .card .media .ph{font-size:16px}
+.bento-grid.list-view .card .media .ic-plate{width:20px;height:20px}
+.bento-grid.list-view .card .body{flex:1;min-width:0;flex-direction:row;align-items:center;gap:14px;padding:0}
+.bento-grid.list-view .card h3{font-size:14px;flex:0 0 auto;max-width:220px}
+.bento-grid.list-view .card .desc{flex:1;font-size:12px;-webkit-line-clamp:1;margin:0}
+.bento-grid.list-view .card .plink{flex:0 0 auto;margin:0;max-width:200px}
+.bento-grid.list-view .card .card-tags{display:flex;margin:0;flex:0 0 auto}
+.bento-grid.list-view .card .tools{position:static;opacity:0;transform:none;margin-left:auto;background:transparent;border:none;backdrop-filter:none;padding:0}
+.bento-grid.list-view .card:hover .tools,.bento-grid.list-view .card:focus-within .tools{opacity:1}
+.bento-grid.list-view .card .tools button{background:var(--card2);border:1px solid var(--border)}
+.bento-grid.list-view .card .tools button:hover{background:var(--card);border-color:var(--border2)}
+
 #noRes{text-align:center;color:var(--muted);padding:50px 16px;font-size:14px;display:none;flex-direction:column;align-items:center;gap:14px}
 #noRes .noResQuery{color:var(--text);font-weight:700}
+
 
 /* ---------- cards ---------- */
 .card{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--border);
@@ -349,9 +372,18 @@ footer{position:relative;z-index:1;text-align:center;color:var(--muted);font-siz
 <nav class="filter-bar" id="filterBar" aria-label="Filter dashboard panels"></nav>
 
 <main>
+  <section id="pinnedShelf" style="display:none">
+    <div class="shelf-header">
+      <span class="shelf-title"><svg class="ic" style="color:var(--accent)"><use href="#i-pin"/></svg>Pinned Panels</span>
+      <span class="shelf-count" id="pinnedCount">0</span>
+    </div>
+    <div class="bento-grid" id="pinnedGrid"></div>
+    <div class="shelf-divider"></div>
+  </section>
 
-  <div id="grid"></div>
+  <div class="bento-grid" id="grid"></div>
   <div id="noRes">
+
     <p>No panels match &ldquo;<span class="noResQuery" id="noResQuery"></span>&rdquo;</p>
     <button type="button" class="btn" id="noResGoogleBtn"><svg style="width:15px;height:15px" viewBox="0 0 24 24"><use href="#i-google"/></svg>Search Google for &ldquo;<span id="noResBtnQuery"></span>&rdquo; &rarr;</button>
   </div>
@@ -506,8 +538,9 @@ footer{position:relative;z-index:1;text-align:center;color:var(--muted);font-siz
 <script>
 (function(){
 'use strict';
-var $=function(s){return document.querySelector(s)};
-var $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+var $=function(s, root){return (root||document).querySelector(s)};
+var $$=function(s, root){return Array.prototype.slice.call((root||document).querySelectorAll(s))};
+
 var KEY='paneldeck.v1';
 var SIZES=['sm','wide','tall','lg'];
 var STYLES=['top','side','overlay','mini','tile','glass','banner','note'];
@@ -745,7 +778,28 @@ function cardHTML(p){
 }
 function render(){
   var list=visible();
-  $('#grid').innerHTML=list.map(cardHTML).join('');
+  var pinned=list.filter(function(p){return p.pinned});
+  var unpinned=list.filter(function(p){return !p.pinned});
+  var isList=state.viewMode==='list';
+
+  var shelfEl=$('#pinnedShelf');
+  var shelfGrid=$('#pinnedGrid');
+  if(shelfEl&&shelfGrid){
+    if(pinned.length>0){
+      shelfEl.style.display='block';
+      $('#pinnedCount').textContent=pinned.length;
+      shelfGrid.className='bento-grid'+(isList?' list-view':'');
+      shelfGrid.innerHTML=pinned.map(cardHTML).join('');
+    }else{
+      shelfEl.style.display='none';
+      shelfGrid.innerHTML='';
+    }
+  }
+
+  var grid=$('#grid');
+  grid.className='bento-grid'+(isList?' list-view':'');
+  grid.innerHTML=unpinned.map(cardHTML).join('');
+
   $('#empty').style.display=state.panels.length?'none':'flex';
   var showNoRes=(!state.panels.length||list.length)?false:true;
   var noResEl=$('#noRes');
@@ -777,8 +831,9 @@ function applyViewMode(){
   if(vBtn)vBtn.title=isList?'Switch to Bento Grid view':'Switch to Compact List view';
 }
 
-/* ---------- grid interactions ---------- */
-$('#grid').addEventListener('click',function(e){
+/* ---------- grid & card interactions ---------- */
+var mainEl=$('main');
+mainEl.addEventListener('click',function(e){
   var btn=e.target.closest('.tools button');
   var card=e.target.closest('.card');
   if(!card)return;
@@ -786,8 +841,13 @@ $('#grid').addEventListener('click',function(e){
   if(!p)return;
   if(btn){
     var act=btn.dataset.act;
-    if(act==='edit')openModal(p);
-    else if(act==='del'){
+    if(act==='pin'){
+      p.pinned=!p.pinned;
+      save();render();
+      toast(p.pinned?'Panel pinned to top shelf':'Panel unpinned');
+    }else if(act==='edit'){
+      openModal(p);
+    }else if(act==='del'){
       if(confirm('Remove "'+p.name+'" from the dashboard?')){
         state.panels=state.panels.filter(function(x){return x.id!==p.id});
         save();render();toast('Panel removed');
@@ -801,7 +861,7 @@ $('#grid').addEventListener('click',function(e){
   }
   openPanel(p);
 });
-$('#grid').addEventListener('keydown',function(e){
+mainEl.addEventListener('keydown',function(e){
   if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('card')){
     var p=state.panels.find(function(x){return x.id===e.target.dataset.id});
     if(p)openPanel(p);
@@ -809,34 +869,39 @@ $('#grid').addEventListener('keydown',function(e){
 });
 
 /* drag & drop reorder */
-$('#grid').addEventListener('dragstart',function(e){
-  if(query.trim()){e.preventDefault();toast('Clear the search box to rearrange panels',true);return}
+mainEl.addEventListener('dragstart',function(e){
+  if(query.trim()||activeFilterType!=='all'||activeFilterTag){
+    e.preventDefault();
+    toast('Clear search and filters to rearrange panels',true);
+    return;
+  }
   var card=e.target.closest('.card');if(!card)return;
   dragId=card.dataset.id;
   card.classList.add('dragging');
   e.dataTransfer.effectAllowed='move';
   try{e.dataTransfer.setData('text/plain',dragId)}catch(_){}
 });
-$('#grid').addEventListener('dragover',function(e){
+mainEl.addEventListener('dragover',function(e){
   if(!dragId)return;
   e.preventDefault();
-  var dragging=$('#grid .dragging');if(!dragging)return;
-  var target=getSwapTarget(e.clientX,e.clientY);
-  if(!target)$('#grid').appendChild(dragging);
-  else if(target!==dragging)$('#grid').insertBefore(dragging,target);
+  var dragging=$('main .dragging');if(!dragging)return;
+  var container=e.target.closest('.bento-grid');if(!container)return;
+  var target=getSwapTarget(container,e.clientX,e.clientY);
+  if(!target)container.appendChild(dragging);
+  else if(target!==dragging)container.insertBefore(dragging,target);
 });
-$('#grid').addEventListener('dragend',function(){
-  var card=$('#grid .dragging');if(card)card.classList.remove('dragging');
+mainEl.addEventListener('dragend',function(){
+  var card=$('main .dragging');if(card)card.classList.remove('dragging');
   if(!dragId)return;
-  var order=$$('#grid .card').map(function(c){return c.dataset.id});
+  var order=$$('main .card').map(function(c){return c.dataset.id});
   state.panels.sort(function(a,b){
     return order.indexOf(a.id)-order.indexOf(b.id);
   });
   dragId=null;save();render();
 });
-function getSwapTarget(x,y){
+function getSwapTarget(container,x,y){
   var best=null,bd=Infinity;
-  $$('#grid .card:not(.dragging)').forEach(function(c){
+  $$('.card:not(.dragging)',container).forEach(function(c){
     var r=c.getBoundingClientRect();
     var dx=x-(r.left+r.width/2),dy=y-(r.top+r.height/2);
     var d=dx*dx+dy*dy;
@@ -847,6 +912,7 @@ function getSwapTarget(x,y){
   var after=(y>r.top+r.height/2)||(y>=r.top&&y<=r.bottom&&x>r.left+r.width/2);
   return after?best.nextSibling:best;
 }
+
 
 /* ---------- modal ---------- */
 /* ---------- modal & picture picker ---------- */
