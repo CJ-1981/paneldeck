@@ -104,7 +104,7 @@ main{position:relative;z-index:1;width:100%;max-width:1360px;margin:0 auto;paddi
   grid-column:auto!important;grid-row:auto!important;min-height:54px;height:auto!important;
   display:flex!important;flex-direction:row!important;align-items:center!important;
   padding:8px 14px!important;border-radius:12px!important;justify-content:flex-start!important;
-  text-align:left!important;transform:none;
+  text-align:left!important;transform:none;box-shadow:var(--specular)!important;
 }
 .bento-grid.list-view .card:hover{
   transform:translateY(-1px)!important;box-shadow:var(--specular),0 6px 18px rgba(0,0,0,.28);
@@ -261,13 +261,11 @@ main{position:relative;z-index:1;width:100%;max-width:1360px;margin:0 auto;paddi
 .ly-banner .desc{color:#c8d1de}
 .ly-banner .plink{color:#aab6c7}
 
-/* note: text-first card with accent edge and corner thumb */
-.ly-note{box-shadow:inset 4px 0 0 var(--paccent,#4f8cff),var(--specular)}
+/* note: text-first card with corner thumb */
 .ly-note .media{position:absolute;top:14px;right:14px;width:46px;height:46px;border-radius:10px;z-index:1}
 .ly-note .ph{font-size:18px}
 .ly-note .body{padding:16px 62px 16px 18px;justify-content:center}
 .ly-note .desc{-webkit-line-clamp:3}
-.card.ly-note:hover{box-shadow:inset 4px 0 0 var(--paccent,#4f8cff),var(--shadow)}
 
 /* helper box in help modal */
 .runhelp{margin-top:14px;padding:13px 14px;border:1px solid var(--border);border-radius:12px;background:var(--card);display:grid;gap:8px;font-size:12.5px;color:var(--muted);line-height:1.55}
