@@ -1330,13 +1330,14 @@ $('#importFile').addEventListener('change',function(e){
       var s=JSON.parse(r.result);
       if(!s||!Array.isArray(s.panels))throw new Error('bad');
       if(state.panels.length&&!confirm('Replace the current dashboard with this backup?'))return;
-      state=Object.assign({title:'PanelDeck',theme:'dark',panels:[]},s);
+      state=Object.assign({title:'PanelDeck',theme:'dark',viewMode:'grid',panels:[]},s);
       normalize();
       query='';$('#search').value='';
       syncSearchClear();
-      save();render();applyTheme();
+      save();render();applyTheme();applyViewMode();
       titleEl.textContent=state.title;
       toast('Dashboard imported');
+
     }catch(err){toast('Invalid backup file',true)}
   };
   r.readAsText(f);
@@ -1429,17 +1430,18 @@ $('#loadExamples').addEventListener('click',function(){
   var isMac=/Mac|iPhone|iPad/.test(navigator.platform||navigator.userAgent);
   var folder=isWin?'C:\\Users':(isMac?'/Users':'/home');
   [
-    {name:'GitHub',desc:'Repositories, pull requests and code review',path:'https://github.com',size:'wide',style:'overlay',img:'icon:code',accent:'#2ea043'},
-    {name:'Wikipedia',desc:'The free encyclopedia — quick reference for everything',path:'https://wikipedia.org',size:'sm',style:'tile',img:'icon:globe',accent:'#3b82f6'},
-    {name:'MDN Web Docs',desc:'Documentation for HTML, CSS and JavaScript',path:'https://developer.mozilla.org',size:'sm',style:'side',img:'icon:book',accent:'#0284c7'},
-    {name:'My Files',desc:'Example local folder — click Edit to point it at your own path',path:folder,size:'tall',style:'overlay',img:'icon:folder',accent:'#f59e0b'},
-    {name:'Calculator',desc:'Example "Run file" panel — launches via the optional Windows helper (see Help)',path:'C:\\Windows\\System32\\calc.exe',size:'sm',style:'note',img:'icon:terminal',accent:'#8b5cf6',mode:'run'}
+    {name:'GitHub',desc:'Repositories, pull requests and code review',path:'https://github.com',size:'wide',style:'overlay',img:'icon:code',accent:'#2ea043',pinned:true,tags:['dev','code','work']},
+    {name:'Wikipedia',desc:'The free encyclopedia — quick reference for everything',path:'https://wikipedia.org',size:'sm',style:'tile',img:'icon:globe',accent:'#3b82f6',tags:['reference','reading']},
+    {name:'MDN Web Docs',desc:'Documentation for HTML, CSS and JavaScript',path:'https://developer.mozilla.org',size:'sm',style:'side',img:'icon:book',accent:'#0284c7',tags:['dev','docs']},
+    {name:'My Files',desc:'Example local folder — click Edit to point it at your own path',path:folder,size:'tall',style:'glass',img:'icon:folder',accent:'#f59e0b',pinned:true,tags:['notes','local']},
+    {name:'Calculator',desc:'Example "Run file" panel — launches via the optional Windows helper (see Help)',path:'C:\\Windows\\System32\\calc.exe',size:'sm',style:'note',img:'icon:terminal',accent:'#8b5cf6',mode:'run',tags:['tools','system']}
   ].forEach(function(d){
-    d.id=uid();d.mode=d.mode||'link';
+    d.id=uid();d.mode=d.mode||'link';d.pinned=Boolean(d.pinned);d.tags=d.tags||[];
     state.panels.push(d);
   });
   save();render();toast('Examples added — click the pencil on any panel to edit it');
 });
+
 
 /* ---------- init ---------- */
 initPicPicker();
