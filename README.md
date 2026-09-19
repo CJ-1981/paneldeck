@@ -42,14 +42,18 @@ Featuring a **Bento Glassmorphism** design system, PanelDeck pairs translucent f
 
 ### 💎 Bento Glassmorphic Aesthetics
 * **Atmospheric Auras:** Layered multi-point radial mesh glow radiating softly in both Dark and Light themes.
-* **Frosted Glass Elevation:** Real-time backdrop blurring (`backdrop-filter: blur(16px)`), specular inner border edge highlights (`inset 0 1px 0 rgba(...)`), and personalized accent glow on hover.
+* **Dual-Theme Glass Materiality:** Deep obsidian translucent glass in Dark Theme and luminous frosted milky-white glass in Light Theme with high specular highlights (`--specular`), border edge refraction, and delicate ambient shadows.
 * **Physics Micro-Interactions:** Smooth spring transitions (`cubic-bezier(0.16, 1, 0.3, 1)`) across hover states, size changes, and modal overlays.
 
-### 🔍 Spotlight Search (`Ctrl+K` / `/`)
-* **Instant Hotkey Focus:** Press `Ctrl+K` or `/` from anywhere on the page to focus the search bar.
-* **Live Matching:** Filters panels in real time with an instant counter pill.
-* **One-Click Clear:** Interactive `✕` button appears when typing.
-* **Google Fallback:** Hit `Enter` or click the Google button when no local cards match to immediately query Google in a new tab.
+### 🔍 Fluid Spotlight Search & Google Integration
+* **Fluid Space Utilization:** The search bar smoothly expands to fill available header width (up to 640px) with dedicated keyboard shortcut badge (`Ctrl K` / `⌘ K`).
+* **Instant Real-Time Matching:** Filters panels dynamically as you type with active counter badge.
+* **Integrated Google Search:** Hit `Enter` or click the Google button to launch a web search with your query in a new tab.
+* **One-Click Clear:** Interactive `✕` button appears when typing to reset query.
+
+### 📱 Responsive & Mobile-Optimized
+* **Adaptive Toolbar:** On narrow mobile viewports (≤ 560px), the `Add panel` button morphs into a compact 38×38 squircle `+` button, keeping all 6 action tools on a single clean row without vertical bloating.
+* **Fluid Breakpoints:** Thoughtful responsive scaling across desktop, tablet, and mobile screens down to 360px.
 
 ### 🏷️ Dynamic Filter Bar & Tag Aggregation
 * **Smart Category Chips:** One-click filtering by resource type: **All**, **Web**, **Folders**, and **Apps**.
@@ -63,7 +67,7 @@ Featuring a **Bento Glassmorphism** design system, PanelDeck pairs translucent f
 
 ### 🔲 Dual View Density Modes
 * **Bento Grid:** Rich visual mosaic showcasing icons, preview images, and custom card aspect ratios.
-* **Compact List View:** High-density horizontal list ideal for ultra-compact views or small sidebar iframe embeds in Obsidian.
+* **Compact List View:** High-density horizontal list with unified column alignment across all 8 card styles, ideal for sidebars or minimalists.
 * **Session Persistence:** Remembers your preferred view mode in `localStorage`.
 
 ### 🛠️ Floating Card Action Pill & Sizing
@@ -79,17 +83,20 @@ Featuring a **Bento Glassmorphism** design system, PanelDeck pairs translucent f
 * **Single Portable File:** `PanelDeck.html` contains all HTML, CSS, JavaScript, and an embedded 43-symbol SVG vector icon library.
 * **Zero External Calls:** No CDNs, no Google Fonts, no telemetry, no node_modules required. Works completely offline.
 * **Local Storage & Backups:** Automatic client-side persistence in `localStorage` with JSON export and import for seamless multi-device syncing.
+* **In-App Help & Shortcuts:** Press `?` anytime to open the built-in cheatsheet with hotkeys, feature overviews, and runner setup instructions.
 
 ---
 
 ## ⌨️ Keyboard Shortcuts
 
-| Shortcut | Action |
-| :--- | :--- |
-| `Ctrl + K` or `/` | Focus Spotlight search |
-| `Esc` | Clear search query or close active modal |
-| `Enter` (in search) | Launch Google search for active query |
-| `Tab` / `Shift + Tab` | Navigate cards and interactive controls |
+| Shortcut | Action | Scope |
+| :--- | :--- | :--- |
+| `Ctrl + K` / `⌘ K` or `/` | Focus Spotlight search bar (auto-selects query) | Global |
+| `Enter` | Trigger Google web search in a new tab | In search bar |
+| `Esc` | Clear search query or dismiss any open modal dialog | Global |
+| `?` | Open / toggle the in-app **Help & Shortcuts** menu | Global |
+| `Tab` / `Shift + Tab` | Navigate cards, filter pills, and toolbar buttons | Global |
+| `Enter` / `Space` | Open focused panel URL or execute runner file | Focused card |
 
 ---
 
