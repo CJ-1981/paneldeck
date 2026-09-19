@@ -824,11 +824,17 @@ function load(){
   try{
     var raw=localStorage.getItem(KEY);if(!raw)return;
     var s=JSON.parse(raw);
-    if(s&&Array.isArray(s.panels))state=Object.assign(state,s);
+    if(s&&typeof s==='object'){
+      state=Object.assign(state,s);
+      if(!Array.isArray(state.panels))state.panels=[];
+    }
   }catch(e){}
 }
 function normalize(){
+  state.title=String(state.title||'PanelDeck');
+  state.theme=state.theme==='light'?'light':'dark';
   state.viewMode=state.viewMode==='list'?'list':'grid';
+  if(!Array.isArray(state.panels))state.panels=[];
   state.panels=state.panels.filter(function(p){return p&&typeof p==='object'});
 
   state.panels.forEach(function(p){
@@ -1104,8 +1110,7 @@ mainEl.addEventListener('click',function(e){
       }
     }else if(act==='size'){
       p.size=SIZES[(SIZES.indexOf(p.size)+1)%SIZES.length];
-      card.className='card ly-'+p.style+' sz-'+p.size;
-      save();
+      save();render();
     }
     return;
   }
@@ -1655,6 +1660,7 @@ $('#loadExamples').addEventListener('click',function(){
 initPicPicker();
 load();normalize();applyTheme();applyViewMode();
 titleEl.textContent=state.title;
+document.title=state.title;
 render();
 
 })();
