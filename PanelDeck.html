@@ -243,20 +243,28 @@ html[data-theme="light"] .tools button:hover{background:rgba(0,0,0,.08)}
 #empty .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:4px}
 
 /* ---------- modal ---------- */
-.overlay{position:fixed;inset:0;z-index:100;background:rgba(8,10,16,.62);backdrop-filter:blur(4px);
+.overlay{position:fixed;inset:0;z-index:100;background:rgba(8,12,20,.68);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   display:none;align-items:flex-start;justify-content:center;padding:38px 16px;overflow:auto}
 .overlay.open{display:flex}
-.modal{width:100%;max-width:540px;background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--shadow)}
-.modal h2{font-size:17px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
-.field{margin-bottom:14px}
-.field>label{display:block;font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
-.field input[type=text],.field textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:14px;outline:none;font-family:inherit}
-.field input[type=text]:focus,.field textarea:focus{border-color:var(--accent)}
-.field textarea{resize:vertical;min-height:62px}
+.modal{width:100%;max-width:560px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:24px;box-shadow:var(--shadow-glass);transform:scale(.96);transition:transform .22s cubic-bezier(.16,1,.3,1)}
+.overlay.open .modal{transform:scale(1)}
+.modal h2{font-size:17px;letter-spacing:-.015em;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.field{margin-bottom:15px}
+.field>label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.field input[type=text],.field textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13.5px;outline:none;font-family:inherit;transition:border-color .18s,box-shadow .18s;box-shadow:var(--specular)}
+.field input[type=text]:focus,.field textarea:focus{border-color:var(--accent);box-shadow:var(--specular),0 0 12px var(--accent-glow)}
+.field textarea{resize:vertical;min-height:60px}
 .hint{font-size:11.5px;color:var(--muted);margin-top:6px;line-height:1.55}
 .hint b{color:var(--text)}
+
+.pin-check-label{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;user-select:none;padding:7px 12px;border-radius:10px;background:var(--card);border:1px solid var(--border);box-shadow:var(--specular);transition:border-color .15s}
+.pin-check-label:hover{border-color:var(--border2)}
+.pin-check-label input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
+.tag-chips-preview{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.tag-chip{font-size:11px;font-weight:600;background:var(--card2);border:1px solid var(--border);color:var(--accent);padding:2px 8px;border-radius:999px}
+
 .imgrow{display:flex;gap:14px;align-items:flex-start}
-.imgprev{width:86px;height:72px;border-radius:12px;background:var(--card);border:1px dashed var(--border2);overflow:hidden;display:grid;place-items:center;color:var(--muted);flex:none;position:relative}
+.imgprev{width:86px;height:72px;border-radius:12px;background:var(--card);border:1px dashed var(--border2);overflow:hidden;display:grid;place-items:center;color:var(--muted);flex:none;position:relative;box-shadow:var(--specular)}
 .imgprev img{width:100%;height:100%;object-fit:cover;display:block}
 .imgprev .ph{font-size:26px}
 .imgprev .ic-plate{width:34px;height:34px}
@@ -282,10 +290,13 @@ html[data-theme="light"] .tools button:hover{background:rgba(0,0,0,.08)}
 .photo-opt.selected{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
 .photo-opt img{width:100%;height:100%;object-fit:cover;display:block}
 .photo-opt span{position:absolute;bottom:2px;left:3px;right:3px;font-size:9.5px;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:rgba(0,0,0,.45);padding:1px 3px;border-radius:4px}
-.pills{display:flex;gap:8px;flex-wrap:wrap}
-.pill{padding:7px 13px;border-radius:999px;border:1px solid var(--border);background:var(--card);font-size:12.5px;font-weight:600;cursor:pointer;color:var(--muted);font-family:inherit}
-.pill.on{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.pills{display:flex;gap:7px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:10px;border:1px solid var(--border);background:var(--card);font-size:12px;font-weight:600;cursor:pointer;color:var(--muted);font-family:inherit;box-shadow:var(--specular);transition:all .15s}
+.pill:hover{border-color:var(--border2);color:var(--text)}
+.pill.on{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent);box-shadow:0 0 10px var(--accent-glow)}
+.mini-glyph{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .accentrow{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+
 .accentrow label{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--muted);font-weight:600;cursor:pointer}
 input[type=color]{width:46px;height:34px;border:1px solid var(--border);border-radius:8px;background:var(--card);padding:2px;cursor:pointer}
 input[type=color]:disabled{opacity:.45;cursor:default}
@@ -432,6 +443,17 @@ footer{position:relative;z-index:1;text-align:center;color:var(--muted);font-siz
       <textarea id="fDesc" maxlength="240" placeholder="What is this panel for?"></textarea>
     </div>
     <div class="field">
+      <label for="fTags">Tags (comma-separated)</label>
+      <input id="fTags" type="text" maxlength="120" placeholder="e.g. work, dev, lotus">
+      <div class="tag-chips-preview" id="tagChipsPreview"></div>
+    </div>
+    <div class="field">
+      <label class="pin-check-label">
+        <input type="checkbox" id="fPinned">
+        <span>Pin this panel to the top shelf</span>
+      </label>
+    </div>
+    <div class="field">
       <label for="fPath">Link / path</label>
       <input id="fPath" type="text" placeholder="https://example.com   |   C:\Users\me\Projects   |   C:\tools\app.exe   |   /home/me/docs">
       <p class="hint">Website URLs open in a new browser tab. Local folders like <b>C:\...</b>, <b>/home/...</b> or <b>\\server\share</b> open in your file browser; documents open or download. To launch executables and shortcuts, set Click action to <b>Run file</b> — see Help for the one-time setup.</p>
@@ -474,25 +496,26 @@ footer{position:relative;z-index:1;text-align:center;color:var(--muted);font-siz
     <div class="field">
       <label>Size</label>
       <div class="pills" id="sizePills">
-        <button type="button" class="pill on" data-v="sm">Small</button>
-        <button type="button" class="pill" data-v="wide">Wide</button>
-        <button type="button" class="pill" data-v="tall">Tall</button>
-        <button type="button" class="pill" data-v="lg">Large</button>
+        <button type="button" class="pill on" data-v="sm"><svg class="mini-glyph" viewBox="0 0 18 18"><rect x="3" y="3" width="12" height="12" rx="2"/></svg>Small (1×1)</button>
+        <button type="button" class="pill" data-v="wide"><svg class="mini-glyph" viewBox="0 0 24 16"><rect x="2" y="2" width="20" height="12" rx="2"/></svg>Wide (2×1)</button>
+        <button type="button" class="pill" data-v="tall"><svg class="mini-glyph" viewBox="0 0 16 24"><rect x="2" y="2" width="12" height="20" rx="2"/></svg>Tall (1×2)</button>
+        <button type="button" class="pill" data-v="lg"><svg class="mini-glyph" viewBox="0 0 22 22"><rect x="2" y="2" width="18" height="18" rx="3"/></svg>Large (2×2)</button>
       </div>
     </div>
     <div class="field">
       <label>Style</label>
       <div class="pills" id="stylePills">
-        <button type="button" class="pill on" data-v="top">Image top</button>
-        <button type="button" class="pill" data-v="side">Image side</button>
-        <button type="button" class="pill" data-v="overlay">Overlay</button>
-        <button type="button" class="pill" data-v="mini">Compact</button>
-        <button type="button" class="pill" data-v="tile">Tile</button>
-        <button type="button" class="pill" data-v="glass">Glass</button>
-        <button type="button" class="pill" data-v="banner">Banner</button>
-        <button type="button" class="pill" data-v="note">Note</button>
+        <button type="button" class="pill on" data-v="top"><svg class="mini-glyph" viewBox="0 0 18 18"><rect x="2" y="2" width="14" height="6" rx="1.5"/><rect x="2" y="10" width="14" height="6" rx="1.5" stroke-dasharray="2 1"/></svg>Top</button>
+        <button type="button" class="pill" data-v="side"><svg class="mini-glyph" viewBox="0 0 18 18"><rect x="2" y="2" width="6" height="14" rx="1.5"/><rect x="10" y="2" width="6" height="14" rx="1.5" stroke-dasharray="2 1"/></svg>Side</button>
+        <button type="button" class="pill" data-v="overlay"><svg class="mini-glyph" viewBox="0 0 18 18"><rect x="2" y="2" width="14" height="14" rx="2"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="14" x2="10" y2="14"/></svg>Overlay</button>
+        <button type="button" class="pill" data-v="mini"><svg class="mini-glyph" viewBox="0 0 18 18"><circle cx="5" cy="9" r="3"/><line x1="10" y1="7" x2="16" y2="7"/><line x1="10" y1="11" x2="14" y2="11"/></svg>Compact</button>
+        <button type="button" class="pill" data-v="tile"><svg class="mini-glyph" viewBox="0 0 18 18"><rect x="5" y="3" width="8" height="8" rx="2"/><line x1="4" y1="14" x2="14" y2="14"/></svg>Tile</button>
+        <button type="button" class="pill" data-v="glass"><svg class="mini-glyph" viewBox="0 0 18 18"><rect x="2" y="2" width="14" height="14" rx="2"/><rect x="4" y="4" width="10" height="10" rx="1.5" stroke-dasharray="2 1"/></svg>Glass</button>
+        <button type="button" class="pill" data-v="banner"><svg class="mini-glyph" viewBox="0 0 18 18"><line x1="2" y1="2" x2="2" y2="16" stroke-width="3"/><rect x="5" y="4" width="11" height="10" rx="1"/></svg>Banner</button>
+        <button type="button" class="pill" data-v="note"><svg class="mini-glyph" viewBox="0 0 18 18"><rect x="2" y="2" width="14" height="14" rx="2"/><line x1="5" y1="6" x2="11" y2="6"/><line x1="5" y1="9" x2="13" y2="9"/><line x1="5" y1="12" x2="9" y2="12"/></svg>Note</button>
       </div>
     </div>
+
     <div class="field">
       <label>Click action</label>
       <div class="pills" id="modePills">
@@ -995,11 +1018,21 @@ function initPicPicker(){
   }).join('');
 }
 
+function updateTagPreview(){
+  var el=$('#tagChipsPreview');
+  if(!el)return;
+  var tags=($('#fTags').value||'').split(',').map(function(s){return s.trim()}).filter(Boolean);
+  el.innerHTML=tags.map(function(t){return '<span class="tag-chip">#'+esc(t)+'</span>'}).join('');
+}
+
 function openModal(p){
   editingId=p?p.id:null;
   draftImg=p?(p.img||null):null;
   $('#fName').value=p?p.name:'';
   $('#fDesc').value=p?(p.desc||''):'';
+  $('#fTags').value=p&&(p.tags&&p.tags.length)?p.tags.join(', '):'';
+  $('#fPinned').checked=!!(p&&p.pinned);
+  updateTagPreview();
   $('#fPath').value=p?p.path:'';
   $('#fImgUrl').value=(p&&p.img&&p.img.indexOf('data:')!==0&&p.img.indexOf('icon:')!==0&&p.img.indexOf('grad:')!==0)?p.img:'';
   pillSel('#sizePills',p?(p.size||'sm'):'sm');
@@ -1024,6 +1057,7 @@ function openModal(p){
   $('#overlay').classList.add('open');
   setTimeout(function(){$('#fName').focus()},60);
 }
+
 function closeModal(){
   $('#overlay').classList.remove('open');
   editingId=null;
@@ -1111,9 +1145,13 @@ $('#form').addEventListener('submit',function(e){
   var name=$('#fName').value.trim();
   var path=$('#fPath').value.trim();
   if(!name||!path){toast('Name and link / path are required',true);return}
+  var tagsVal=($('#fTags').value||'').split(',').map(function(s){return s.trim()}).filter(Boolean);
+  var pinnedVal=$('#fPinned').checked;
   var data={
     name:name,
     desc:$('#fDesc').value.trim(),
+    tags:tagsVal,
+    pinned:pinnedVal,
     path:path,
     img:draftImg,
     size:pillVal('#sizePills'),
@@ -1132,6 +1170,8 @@ $('#form').addEventListener('submit',function(e){
   }
   save();render();closeModal();
 });
+$('#fTags').addEventListener('input',updateTagPreview);
+
 
 /* uploaded image -> resized jpeg data url */
 function fileToDataUrl(file){
