@@ -7,26 +7,33 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0e1116;--bg2:#151a23;--card:#1a2029;--card2:#212937;
-  --text:#e9edf4;--muted:#8f99ab;--border:#2a3342;--border2:#3a4658;
-  --accent:#4f8cff;--danger:#ff6b6b;
-  --shadow:0 10px 30px rgba(0,0,0,.35);
-  --radius:14px;
+  --bg:#0b0f17;--bg2:rgba(18,24,38,.85);--card:rgba(22,30,46,.65);--card2:rgba(30,41,62,.75);
+  --card-glass:rgba(255,255,255,.045);--card-glass-hover:rgba(255,255,255,.08);
+  --text:#f0f4fc;--muted:#8b99b0;--border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.15);
+  --specular:inset 0 1px 0 rgba(255,255,255,.12);
+  --accent:#4f8cff;--accent-glow:rgba(79,140,255,.28);--danger:#ff5c5c;
+  --shadow:0 12px 36px rgba(0,0,0,.45);--shadow-glass:0 16px 40px rgba(0,0,0,.35);
+  --radius:16px;
 }
 html[data-theme="light"]{
-  --bg:#eef1f6;--bg2:#ffffff;--card:#ffffff;--card2:#f1f5fa;
-  --text:#182030;--muted:#5b6676;--border:#dfe5ee;--border2:#c6d1e0;
-  --shadow:0 10px 24px rgba(30,45,80,.10);
+  --bg:#f4f6fb;--bg2:rgba(255,255,255,.88);--card:rgba(255,255,255,.72);--card2:rgba(240,244,250,.85);
+  --card-glass:rgba(255,255,255,.75);--card-glass-hover:rgba(255,255,255,.92);
+  --text:#141b2b;--muted:#5e6d84;--border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.15);
+  --specular:inset 0 1px 0 rgba(255,255,255,.9);
+  --accent-glow:rgba(79,140,255,.20);
+  --shadow:0 10px 30px rgba(25,40,75,.08);--shadow-glass:0 14px 34px rgba(25,40,75,.10);
 }
 html,body{height:100%}
-body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+body{font-family:system-ui,-apple-system,'Segoe UI Variable Display','Segoe UI',Roboto,Inter,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;letter-spacing:-0.01em}
 body::before{content:'';position:fixed;inset:0;background:
-  radial-gradient(700px 350px at 12% -5%, rgba(79,140,255,.10), transparent 60%),
-  radial-gradient(700px 350px at 95% 0%, rgba(160,110,255,.08), transparent 60%);
+  radial-gradient(850px 450px at 12% -8%, rgba(79,140,255,.18), transparent 70%),
+  radial-gradient(800px 450px at 88% 2%, rgba(168,85,247,.14), transparent 65%),
+  radial-gradient(650px 350px at 50% 100%, rgba(20,184,166,.07), transparent 70%);
   pointer-events:none;z-index:0}
-::-webkit-scrollbar{width:10px;height:10px}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:6px}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px;border:2px solid transparent;background-clip:padding-box}
 ::-webkit-scrollbar-track{background:transparent}
+
 
 /* ---------- header ---------- */
 header{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
