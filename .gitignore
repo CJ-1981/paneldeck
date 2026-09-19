@@ -1,0 +1,9 @@
+# Worktrees & temporary tools
+.worktrees/
+worktrees/
+.superpowers/
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+*.tmp

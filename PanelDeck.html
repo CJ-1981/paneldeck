@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PanelDeck — Personal Dashboard</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0e1116;--bg2:#151a23;--card:#1a2029;--card2:#212937;
+  --text:#e9edf4;--muted:#8f99ab;--border:#2a3342;--border2:#3a4658;
+  --accent:#4f8cff;--danger:#ff6b6b;
+  --shadow:0 10px 30px rgba(0,0,0,.35);
+  --radius:14px;
+}
+html[data-theme="light"]{
+  --bg:#eef1f6;--bg2:#ffffff;--card:#ffffff;--card2:#f1f5fa;
+  --text:#182030;--muted:#5b6676;--border:#dfe5ee;--border2:#c6d1e0;
+  --shadow:0 10px 24px rgba(30,45,80,.10);
+}
+html,body{height:100%}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(700px 350px at 12% -5%, rgba(79,140,255,.10), transparent 60%),
+  radial-gradient(700px 350px at 95% 0%, rgba(160,110,255,.08), transparent 60%);
+  pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:6px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ---------- header ---------- */
+header{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:13px 22px;background:var(--bg);
+  background:color-mix(in srgb,var(--bg) 80%,transparent);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{width:36px;height:36px;flex:none;border-radius:10px;background:linear-gradient(135deg,#4f8cff,#9b6bff);display:grid;place-items:center;color:#fff}
+#appTitle{font-size:19px;font-weight:700;outline:none;border-radius:8px;padding:2px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38vw}
+#appTitle:hover,#appTitle:focus{background:var(--card2)}
+.toolbar{display:flex;align-items:center;gap:9px;margin-left:auto;flex-wrap:wrap}
+#count{font-size:12px;color:var(--muted);margin-right:2px}
+.search{position:relative;display:flex;align-items:center}
+.search .ic-lens{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--muted);pointer-events:none}
+.search input{width:220px;max-width:48vw;padding:9px 74px 9px 33px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);outline:none;font-size:13.5px;font-family:inherit;transition:width .22s,border-color .18s}
+.search input:focus{width:260px;border-color:var(--accent)}
+.search-actions{position:absolute;right:6px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:3px}
+.search-clear{width:20px;height:20px;padding:0;border:none;background:transparent;color:var(--muted);cursor:pointer;border-radius:50%;display:none;align-items:center;justify-content:center;transition:color .15s}
+.search-clear:hover{color:var(--text)}
+.search-google-btn{height:25px;display:inline-flex;align-items:center;gap:4px;padding:0 7px;border-radius:6px;border:1px solid var(--border2);background:var(--card2);color:var(--text);font-size:11px;font-weight:600;cursor:pointer;transition:all .18s;font-family:inherit}
+.search-google-btn:hover{background:var(--card);border-color:var(--accent);color:var(--accent)}
+.search-google-btn svg{width:13px;height:13px;flex:none}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:10px;border:1px solid var(--border);
+  background:var(--card);color:var(--text);font-size:13.5px;font-weight:600;cursor:pointer;transition:border-color .18s,background .18s,filter .18s;font-family:inherit}
+.btn:hover{border-color:var(--border2);background:var(--card2)}
+.btn.primary{background:linear-gradient(135deg,#4f8cff,#6a5cff);border-color:transparent;color:#fff}
+.btn.primary:hover{filter:brightness(1.12)}
+.btn.iconbtn{width:38px;height:38px;padding:0;justify-content:center}
+.ic{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* ---------- main / grid ---------- */
+main{position:relative;z-index:1;width:100%;max-width:1280px;margin:0 auto;padding:26px 22px 60px;flex:1}
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));grid-auto-rows:215px;gap:16px}
+.sz-wide{grid-column:span 2}
+.sz-tall{grid-row:span 2}
+.sz-lg{grid-column:span 2;grid-row:span 2}
+@media(max-width:540px){#grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:440px){#grid{grid-template-columns:1fr}.sz-wide,.sz-lg{grid-column:span 1}}
+#noRes{text-align:center;color:var(--muted);padding:50px 16px;font-size:14px;display:none;flex-direction:column;align-items:center;gap:14px}
+#noRes .noResQuery{color:var(--text);font-weight:700}
+
+/* ---------- cards ---------- */
+.card{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;cursor:pointer;user-select:none;
+  transition:transform .18s,box-shadow .18s,border-color .18s}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:color-mix(in srgb,var(--paccent,#4f8cff) 55%,var(--border))}
+.card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.card.dragging{opacity:.45;transform:scale(.98)}
+.card .media{position:relative;flex:0 0 56%;min-height:0;background:var(--card2);overflow:hidden}
+.card .media img{width:100%;height:100%;object-fit:cover;display:block}
+.ph{position:absolute;inset:0;display:grid;place-items:center;font-size:44px;font-weight:800;color:rgba(255,255,255,.93);
+  letter-spacing:1px;background:linear-gradient(135deg,hsl(var(--h,210) 62% 46%),hsl(calc(var(--h,210) + 45) 66% 33%))}
+.ph-icon{background:radial-gradient(circle at center, color-mix(in srgb, var(--paccent,#4f8cff) 24%, var(--card2)), var(--card2))}
+.ic-plate{width:46px;height:46px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;color:var(--paccent,#4f8cff);filter:drop-shadow(0 2px 8px rgba(0,0,0,.3))}
+.ly-mini .ic-plate{width:28px;height:28px}
+.ly-note .ic-plate{width:24px;height:24px}
+.ly-tile .ic-plate{width:40px;height:40px}
+.grad-aurora{background:linear-gradient(135deg,#0ea5e9,#6366f1,#a855f7)}
+.grad-sunset{background:linear-gradient(135deg,#f97316,#ec4899,#8b5cf6)}
+.grad-cyber{background:linear-gradient(135deg,#06b6d4,#3b82f6,#d946ef)}
+.grad-emerald{background:linear-gradient(135deg,#059669,#10b981,#064e3b)}
+.grad-slate{background:linear-gradient(135deg,#1e293b,#334155,#475569)}
+.grad-neon{background:linear-gradient(135deg,#7c3aed,#c026d3,#4f46e5)}
+.grad-amber{background:linear-gradient(135deg,#d97706,#f59e0b,#b45309)}
+.grad-ocean{background:linear-gradient(135deg,#0284c7,#0369a1,#0c4a6e)}
+.card .body{flex:1;min-height:0;padding:12px 14px;display:flex;flex-direction:column;gap:4px;overflow:hidden}
+.card h3{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .desc{font-size:12.5px;color:var(--muted);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card .plink{margin-top:auto;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.card .plink .ic{width:12px;height:12px}
+.card .plink span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sz-tall .desc,.sz-lg .desc{-webkit-line-clamp:3}
+
+/* card layout variants */
+.ly-side{flex-direction:row}
+.ly-side .media{flex:0 0 44%;height:auto}
+.ly-overlay{justify-content:flex-end}
+.ly-overlay .media{position:absolute;inset:0;flex:none}
+.ly-overlay .media::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,12,18,.05) 30%,rgba(8,10,16,.88))}
+.ly-overlay .body{position:relative;z-index:2;background:transparent;padding:15px 16px}
+.ly-overlay h3{font-size:16px}
+.ly-overlay .desc{color:#c9d2e0}
+.ly-overlay .plink{color:#aeb9cc}
+.ly-mini{flex-direction:row;align-items:center}
+.ly-mini .media{flex:0 0 64px;width:64px;height:64px;margin-left:14px;border-radius:10px}
+.ly-mini .ph{font-size:22px}
+.ly-mini .body{padding:12px 14px 12px 12px}
+.ly-mini h3{font-size:14px}
+
+/* tile: app-launcher style */
+.ly-tile{align-items:center;justify-content:center;text-align:center;padding:14px 12px}
+.ly-tile .media{flex:0 0 auto;width:82px;height:82px;border-radius:18px;margin:0 auto 10px;box-shadow:0 8px 20px rgba(0,0,0,.28)}
+.ly-tile .ph{font-size:32px}
+.ly-tile .body{flex:0 0 auto;padding:0;gap:3px;min-height:0;width:100%}
+.ly-tile h3{font-size:14.5px}
+.ly-tile .desc{font-size:12px}
+.ly-tile .plink{margin:6px auto 0;max-width:100%;justify-content:center}
+.ly-tile .plink span{min-width:0}
+.sz-tall.ly-tile .media{width:96px;height:96px}
+.sz-lg.ly-tile .media{width:112px;height:112px}
+
+/* glass: frosted panel over full-bleed image */
+.ly-glass{align-items:center;justify-content:center}
+.ly-glass .media{position:absolute;inset:0;flex:none}
+.ly-glass .media::after{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(12,16,24,.25),rgba(8,10,16,.6))}
+.ly-glass .body{position:relative;z-index:2;background:rgba(14,18,27,.55);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:14px;margin:0 14px;padding:12px 14px;max-height:calc(100% - 28px);overflow:hidden}
+.ly-glass h3{color:#fff}
+.ly-glass .desc{color:#d8dfea}
+.ly-glass .plink{color:#b7c2d3}
+
+/* banner: accent edge + left-shaded full-bleed image */
+.ly-banner{justify-content:center}
+.ly-banner::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--paccent,#4f8cff);z-index:3}
+.ly-banner .media{position:absolute;inset:0;flex:none}
+.ly-banner .media::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,13,20,.93),rgba(10,13,20,.6) 55%,rgba(10,13,20,.28))}
+.ly-banner .body{position:relative;z-index:2;justify-content:center;padding:16px 18px}
+.ly-banner h3{font-size:17px}
+.ly-banner .desc{color:#c8d1de}
+.ly-banner .plink{color:#aab6c7}
+
+/* note: text-first card with accent edge and corner thumb */
+.ly-note{box-shadow:inset 4px 0 0 var(--paccent,#4f8cff)}
+.ly-note .media{position:absolute;top:14px;right:14px;width:46px;height:46px;border-radius:10px;z-index:1}
+.ly-note .ph{font-size:18px}
+.ly-note .body{padding:16px 62px 16px 18px;justify-content:center}
+.ly-note .desc{-webkit-line-clamp:3}
+.card.ly-note:hover{box-shadow:inset 4px 0 0 var(--paccent,#4f8cff),var(--shadow)}
+
+/* helper box in help modal */
+.runhelp{margin-top:14px;padding:13px 14px;border:1px solid var(--border);border-radius:12px;background:var(--card);display:grid;gap:8px;font-size:12.5px;color:var(--muted);line-height:1.55}
+.runhelp b{color:var(--text)}
+.runhelp .row{display:flex;gap:8px;flex-wrap:wrap}
+.runhelp .warn{color:#d9973f}
+#execHint{color:#d9973f}
+
+/* hover tools */
+.tools{position:absolute;top:8px;right:8px;z-index:6;display:flex;gap:6px;opacity:0;transform:translateY(-4px);transition:opacity .18s,transform .18s}
+.card:hover .tools,.card:focus-within .tools{opacity:1;transform:none}
+.tools button{width:28px;height:28px;border-radius:8px;border:1px solid rgba(255,255,255,.16);background:rgba(15,18,26,.72);
+  color:#eef2f8;display:grid;place-items:center;cursor:pointer;backdrop-filter:blur(6px);transition:background .15s}
+.tools button:hover{background:rgba(38,48,68,.92)}
+.tools .ic{width:13px;height:13px}
+
+/* ---------- empty state ---------- */
+#empty{display:none;flex-direction:column;align-items:center;gap:14px;padding:84px 20px;text-align:center;color:var(--muted)}
+#empty h2{color:var(--text);font-size:20px}
+#empty p{font-size:13.5px;line-height:1.6;max-width:480px}
+#empty .art{width:118px;height:118px;border-radius:26px;background:var(--card);border:1px dashed var(--border2);display:grid;place-items:center;color:var(--muted)}
+#empty .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:4px}
+
+/* ---------- modal ---------- */
+.overlay{position:fixed;inset:0;z-index:100;background:rgba(8,10,16,.62);backdrop-filter:blur(4px);
+  display:none;align-items:flex-start;justify-content:center;padding:38px 16px;overflow:auto}
+.overlay.open{display:flex}
+.modal{width:100%;max-width:540px;background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--shadow)}
+.modal h2{font-size:17px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.field{margin-bottom:14px}
+.field>label{display:block;font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+.field input[type=text],.field textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:14px;outline:none;font-family:inherit}
+.field input[type=text]:focus,.field textarea:focus{border-color:var(--accent)}
+.field textarea{resize:vertical;min-height:62px}
+.hint{font-size:11.5px;color:var(--muted);margin-top:6px;line-height:1.55}
+.hint b{color:var(--text)}
+.imgrow{display:flex;gap:14px;align-items:flex-start}
+.imgprev{width:86px;height:72px;border-radius:12px;background:var(--card);border:1px dashed var(--border2);overflow:hidden;display:grid;place-items:center;color:var(--muted);flex:none;position:relative}
+.imgprev img{width:100%;height:100%;object-fit:cover;display:block}
+.imgprev .ph{font-size:26px}
+.imgprev .ic-plate{width:34px;height:34px}
+.pic-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.pic-tab{padding:5px 11px;border-radius:8px;border:1px solid var(--border);background:var(--card);font-size:11.5px;font-weight:600;cursor:pointer;color:var(--muted);font-family:inherit;transition:all .15s}
+.pic-tab:hover{border-color:var(--border2);color:var(--text)}
+.pic-tab.on{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.pic-pane{display:none}
+.pic-pane.on{display:block}
+.icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:6px;max-height:148px;overflow-y:auto;padding:6px;border:1px solid var(--border);border-radius:10px;background:var(--card)}
+.icon-opt{height:36px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--muted);display:grid;place-items:center;cursor:pointer;transition:border-color .15s,background .15s,color .15s}
+.icon-opt:hover{background:var(--card2);border-color:var(--border2);color:var(--text)}
+.icon-opt.selected{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent)}
+.icon-opt .ic{width:18px;height:18px}
+.swatch-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-height:148px;overflow-y:auto;padding:2px}
+.swatch-opt{height:46px;border-radius:9px;border:2px solid transparent;cursor:pointer;position:relative;overflow:hidden;transition:transform .15s,border-color .15s}
+.swatch-opt:hover{transform:scale(1.02);border-color:rgba(255,255,255,.3)}
+.swatch-opt.selected{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.swatch-opt span{position:absolute;bottom:3px;left:4px;right:4px;font-size:10px;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-height:148px;overflow-y:auto;padding:2px}
+.photo-opt{height:54px;border-radius:9px;border:2px solid transparent;cursor:pointer;position:relative;overflow:hidden;background:#111;transition:transform .15s,border-color .15s}
+.photo-opt:hover{transform:scale(1.02);border-color:rgba(255,255,255,.3)}
+.photo-opt.selected{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.photo-opt img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-opt span{position:absolute;bottom:2px;left:3px;right:3px;font-size:9.5px;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:rgba(0,0,0,.45);padding:1px 3px;border-radius:4px}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{padding:7px 13px;border-radius:999px;border:1px solid var(--border);background:var(--card);font-size:12.5px;font-weight:600;cursor:pointer;color:var(--muted);font-family:inherit}
+.pill.on{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.accentrow{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.accentrow label{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--muted);font-weight:600;cursor:pointer}
+input[type=color]{width:46px;height:34px;border:1px solid var(--border);border-radius:8px;background:var(--card);padding:2px;cursor:pointer}
+input[type=color]:disabled{opacity:.45;cursor:default}
+.modal .actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+.helpbox ul{margin:12px 0 4px 18px;display:grid;gap:9px;font-size:13.5px;color:var(--muted);line-height:1.55}
+.helpbox b{color:var(--text)}
+.btn.danger{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 45%,var(--border))}
+.btn.danger:hover{border-color:var(--danger);background:color-mix(in srgb,var(--danger) 10%,transparent)}
+
+/* ---------- footer / toast ---------- */
+
+footer{position:relative;z-index:1;text-align:center;color:var(--muted);font-size:11.5px;padding:0 16px 24px}
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);z-index:200;
+  background:#222b3a;color:#eef2f8;border:1px solid var(--border2);padding:11px 18px;border-radius:12px;
+  font-size:13.5px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;box-shadow:var(--shadow);max-width:90vw}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.err{border-color:#b04a4a}
+</style>
+</head>
+<body>
+
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+  <symbol id="i-export" viewBox="0 0 24 24"><path d="M12 15V3M8 7l4-4 4 4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></symbol>
+  <symbol id="i-import" viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.3 9.3a2.8 2.8 0 1 1 4 2.5c-.9.45-1.3 1-1.3 2v.2M12 17.5h.01"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/></symbol>
+  <symbol id="i-layout" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="10" width="8" height="11" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14.2 14.2 0 0 1 3.8 9 14.2 14.2 0 0 1-3.8 9 14.2 14.2 0 0 1-3.8-9A14.2 14.2 0 0 1 12 3Z"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m5 19 5.5-5.5 3 3L17 13l4 4"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 5v14l12-7Z"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-logo" viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></symbol>
+  <symbol id="i-terminal" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
+  <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2M9 2v2M20 15h2M20 9h2M9 20v2M15 20v2M2 9h2M2 15h2"/></symbol>
+  <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></symbol>
+  <symbol id="i-server" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 2v18"/></symbol>
+  <symbol id="i-file-text" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></symbol>
+  <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></symbol>
+  <symbol id="i-gamepad" viewBox="0 0 24 24"><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><line x1="15" y1="13" x2="15.01" y2="13"/><line x1="18" y1="11" x2="18.01" y2="11"/><rect x="2" y="6" width="20" height="12" rx="6"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></symbol>
+  <symbol id="i-coffee" viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+  <symbol id="i-google" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/></symbol>
+</svg>
+
+<header>
+  <div class="brand">
+    <div class="logo"><svg class="ic" style="width:18px;height:18px"><use href="#i-logo"/></svg></div>
+    <h1 id="appTitle" contenteditable="true" spellcheck="false" title="Click to rename your dashboard">PanelDeck</h1>
+  </div>
+  <div class="toolbar">
+    <span id="count"></span>
+    <div class="search">
+      <svg class="ic ic-lens"><use href="#i-search"/></svg>
+      <input id="search" type="text" placeholder="Search panels or Google..." autocomplete="off" title="Filter panels, or press Enter to search Google">
+      <div class="search-actions">
+        <button type="button" class="search-clear" id="searchClear" title="Clear search" aria-label="Clear search"><svg class="ic" style="width:12px;height:12px"><use href="#i-x"/></svg></button>
+        <button type="button" class="search-google-btn" id="searchGoogleBtn" title="Search Google for this query (or press Enter)" aria-label="Search Google"><svg viewBox="0 0 24 24"><use href="#i-google"/></svg><span>Google</span></button>
+      </div>
+    </div>
+    <button class="btn primary" id="addBtn" title="Add a new panel"><svg class="ic"><use href="#i-plus"/></svg>Add panel</button>
+    <button class="btn iconbtn" id="themeBtn" title="Toggle dark / light theme">
+      <svg class="ic" id="iconSun"><use href="#i-sun"/></svg>
+      <svg class="ic" id="iconMoon" style="display:none"><use href="#i-moon"/></svg>
+    </button>
+    <button class="btn iconbtn" id="exportBtn" title="Export backup (JSON)"><svg class="ic"><use href="#i-export"/></svg></button>
+    <button class="btn iconbtn" id="importBtn" title="Import backup (JSON)"><svg class="ic"><use href="#i-import"/></svg></button>
+    <button class="btn iconbtn" id="helpBtn" title="Help and tips"><svg class="ic"><use href="#i-help"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <div id="grid"></div>
+  <div id="noRes">
+    <p>No panels match &ldquo;<span class="noResQuery" id="noResQuery"></span>&rdquo;</p>
+    <button type="button" class="btn" id="noResGoogleBtn"><svg style="width:15px;height:15px" viewBox="0 0 24 24"><use href="#i-google"/></svg>Search Google for &ldquo;<span id="noResBtnQuery"></span>&rdquo; &rarr;</button>
+  </div>
+  <section id="empty">
+    <div class="art"><svg class="ic" style="width:44px;height:44px"><use href="#i-layout"/></svg></div>
+    <h2>Build your own dashboard</h2>
+    <p>Add panels with a picture, a name and a description next to it, plus a link or folder path.
+       Click a panel to open it — websites open in a new tab, local folders open in your file browser.
+       Drag panels to rearrange them, and give each one its own size and style.</p>
+    <div class="row">
+      <button class="btn primary" id="emptyAdd"><svg class="ic"><use href="#i-plus"/></svg>Add your first panel</button>
+      <button class="btn" id="loadExamples">Load examples</button>
+    </div>
+  </section>
+</main>
+
+<footer>Your dashboard is saved automatically in this browser. Use the export button in the toolbar to make a backup.</footer>
+
+<!-- add / edit panel modal -->
+<div class="overlay" id="overlay">
+  <form class="modal" id="form" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h2><span id="modalTitle">New panel</span>
+      <button type="button" class="btn iconbtn" id="closeModal" title="Close" aria-label="Close dialog"><svg class="ic"><use href="#i-x"/></svg></button>
+    </h2>
+    <div class="field">
+      <label for="fName">Name</label>
+      <input id="fName" type="text" maxlength="80" placeholder="e.g. Project folder">
+    </div>
+    <div class="field">
+      <label for="fDesc">Description</label>
+      <textarea id="fDesc" maxlength="240" placeholder="What is this panel for?"></textarea>
+    </div>
+    <div class="field">
+      <label for="fPath">Link / path</label>
+      <input id="fPath" type="text" placeholder="https://example.com   |   C:\Users\me\Projects   |   C:\tools\app.exe   |   /home/me/docs">
+      <p class="hint">Website URLs open in a new browser tab. Local folders like <b>C:\...</b>, <b>/home/...</b> or <b>\\server\share</b> open in your file browser; documents open or download. To launch executables and shortcuts, set Click action to <b>Run file</b> — see Help for the one-time setup.</p>
+      <p class="hint" id="execHint" style="display:none"></p>
+    </div>
+    <div class="field">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <label style="margin-bottom:0">Picture &amp; Icon</label>
+        <button type="button" class="btn" id="fRemoveImg" style="padding:3px 9px;font-size:11px;height:auto"><svg class="ic" style="width:12px;height:12px"><use href="#i-x"/></svg>Use monogram</button>
+      </div>
+      <div class="imgrow">
+        <div class="imgprev" id="imgPrev" title="Current preview"></div>
+        <div style="flex:1;min-width:0">
+          <div class="pic-tabs" id="picTabs">
+            <button type="button" class="pic-tab on" data-tab="icons">Icons</button>
+            <button type="button" class="pic-tab" data-tab="gradients">Gradients</button>
+            <button type="button" class="pic-tab" data-tab="photos">Wallpapers</button>
+            <button type="button" class="pic-tab" data-tab="upload">Upload</button>
+            <button type="button" class="pic-tab" data-tab="url">URL</button>
+          </div>
+          <div class="pic-pane on" id="pane-icons">
+            <div class="icon-grid" id="iconGrid"></div>
+          </div>
+          <div class="pic-pane" id="pane-gradients">
+            <div class="swatch-grid" id="gradGrid"></div>
+          </div>
+          <div class="pic-pane" id="pane-photos">
+            <div class="photo-grid" id="photoGrid"></div>
+          </div>
+          <div class="pic-pane" id="pane-upload">
+            <label class="btn" style="justify-content:center;width:100%"><svg class="ic"><use href="#i-image"/></svg>Choose image file...<input id="fImgFile" type="file" accept="image/*" hidden></label>
+          </div>
+          <div class="pic-pane" id="pane-url">
+            <input id="fImgUrl" type="text" placeholder="https://example.com/image.jpg">
+          </div>
+        </div>
+      </div>
+      <p class="hint">Choose a curated vector icon, vibrant gradient, sample wallpaper, or upload your own image. If cleared, a monogram letter is generated.</p>
+    </div>
+    <div class="field">
+      <label>Size</label>
+      <div class="pills" id="sizePills">
+        <button type="button" class="pill on" data-v="sm">Small</button>
+        <button type="button" class="pill" data-v="wide">Wide</button>
+        <button type="button" class="pill" data-v="tall">Tall</button>
+        <button type="button" class="pill" data-v="lg">Large</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Style</label>
+      <div class="pills" id="stylePills">
+        <button type="button" class="pill on" data-v="top">Image top</button>
+        <button type="button" class="pill" data-v="side">Image side</button>
+        <button type="button" class="pill" data-v="overlay">Overlay</button>
+        <button type="button" class="pill" data-v="mini">Compact</button>
+        <button type="button" class="pill" data-v="tile">Tile</button>
+        <button type="button" class="pill" data-v="glass">Glass</button>
+        <button type="button" class="pill" data-v="banner">Banner</button>
+        <button type="button" class="pill" data-v="note">Note</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Click action</label>
+      <div class="pills" id="modePills">
+        <button type="button" class="pill on" data-v="link">Open link</button>
+        <button type="button" class="pill" data-v="run">Run file</button>
+      </div>
+      <p class="hint">"Run file" launches the file with your operating system via the optional PanelDeck Runner helper (Windows — see Help). Documents and folders work fine with "Open link".</p>
+    </div>
+    <div class="field">
+      <label>Accent color</label>
+      <div class="accentrow">
+        <input type="color" id="fColor" value="#4f8cff">
+        <label><input type="checkbox" id="fAuto" checked> Automatic (generated from the name)</label>
+      </div>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn" id="cancelModal">Cancel</button>
+      <button type="submit" class="btn primary"><svg class="ic"><use href="#i-plus"/></svg>Save panel</button>
+    </div>
+  </form>
+</div>
+
+<!-- help modal -->
+<div class="overlay" id="helpOverlay">
+  <div class="modal helpbox" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <h2 id="helpTitle">Help and tips
+      <button type="button" class="btn iconbtn" id="closeHelp" title="Close" aria-label="Close help dialog"><svg class="ic"><use href="#i-x"/></svg></button>
+    </h2>
+    <ul>
+      <li><b>Add a panel:</b> click "Add panel", fill in a name, a link or folder path, and optionally a picture, size, style and accent color.</li>
+      <li><b>Open a panel:</b> click anywhere on the card. Website URLs open in a new tab; local folder paths open in your system file browser.</li>
+      <li><b>Local folders:</b> work when this HTML file is opened directly from your computer (double-click it). Browsers block local paths on hosted web pages.</li>
+      <li><b>Rearrange:</b> drag cards to reorder them (mouse or trackpad). The layout button on a card cycles its size; the pencil button opens the editor where you can change style, picture and color.</li>
+      <li><b>Renaming:</b> click the dashboard title at the top left to rename it.</li>
+      <li><b>Backups:</b> everything is stored automatically in this browser (localStorage). Use Export / Import to save or move your dashboard to another computer.</li>
+      <li><b>Styles:</b> eight card layouts — image top, image side, overlay, compact, tile, glass, banner and note. Mix them with the four sizes freely; the grid adapts.</li>
+      <li><b>Run file mode:</b> set the click action to "Run file" to launch executables and shortcuts (.exe, .lnk, .bat...) with your operating system. Windows needs a one-time helper — see below. Documents and folders do not need it.</li>
+    </ul>
+    <div class="runhelp">
+      <b>Run file mode — optional Windows helper (one-time setup)</b>
+      <p>Browsers are not allowed to execute local files directly, so PanelDeck uses a tiny helper: (1) download <b>run.vbs</b> and save it into <b>C:\Users\Public\PanelDeck</b> (create the folder if needed), (2) download the registration file below and double-click it, (3) restart your browser. After that, clicking a "Run file" panel launches the file with Windows.</p>
+      <div class="row">
+        <button type="button" class="btn" id="dlVbs"><svg class="ic"><use href="#i-import"/></svg>1. Download run.vbs</button>
+        <button type="button" class="btn" id="dlReg"><svg class="ic"><use href="#i-import"/></svg>2. Download PanelDeckRunner.reg</button>
+      </div>
+      <p class="warn">Only point "Run file" panels at files you trust — they launch with your user permissions. Tip: .lnk shortcuts work too. On macOS / Linux, keep "Open link" for documents; launching executables there requires a custom URL-scheme handler.</p>
+    </div>
+    <div class="actions" style="justify-content:space-between">
+      <button type="button" class="btn danger" id="resetBtn">Reset dashboard</button>
+      <button type="button" class="btn primary" id="closeHelp2">Got it</button>
+    </div>
+  </div>
+</div>
+
+<input id="importFile" type="file" accept="application/json,.json" hidden>
+<div id="toast" role="status"></div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s){return document.querySelector(s)};
+var $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+var KEY='paneldeck.v1';
+var SIZES=['sm','wide','tall','lg'];
+var STYLES=['top','side','overlay','mini','tile','glass','banner','note'];
+var MODES=['link','run'];
+var RUN_SCHEME='deckrun:';
+
+var state={title:'PanelDeck',theme:'dark',panels:[]};
+var query='';
+var editingId=null;
+var draftImg=null;
+var dragId=null;
+var toastT=null;
+
+/* ---------- helpers ---------- */
+function uid(){
+  return (window.crypto&&crypto.randomUUID)?crypto.randomUUID():
+    'id-'+Date.now()+'-'+Math.random().toString(36).slice(2,10);
+}
+function esc(s){
+  return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function hueFor(s){
+  var h=0;String(s||'?').split('').forEach(function(c){h=(h*31+c.charCodeAt(0))%360});
+  return h;
+}
+function accentOf(p){return p.accent||('hsl('+hueFor(p.name)+' 62% 55%)')}
+function toast(msg,err){
+  var t=$('#toast');t.textContent=msg;t.classList.toggle('err',!!err);t.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('show')},2600);
+}
+
+/* ---------- storage ---------- */
+function save(){
+  try{localStorage.setItem(KEY,JSON.stringify(state))}
+  catch(e){toast('Could not save — browser storage is full. Try image URLs instead of uploads.',true)}
+}
+function load(){
+  try{
+    var raw=localStorage.getItem(KEY);if(!raw)return;
+    var s=JSON.parse(raw);
+    if(s&&Array.isArray(s.panels))state=Object.assign(state,s);
+  }catch(e){}
+}
+function normalize(){
+  state.panels=state.panels.filter(function(p){return p&&typeof p==='object'});
+  state.panels.forEach(function(p){
+    p.id=p.id||uid();
+    p.name=String(p.name!=null?p.name:'Untitled');
+    p.path=String(p.path!=null?p.path:'');
+    p.desc=String(p.desc!=null?p.desc:'');
+    p.img=p.img?String(p.img):null;
+    p.accent=String(p.accent!=null?p.accent:'');
+    if(SIZES.indexOf(p.size)<0)p.size='sm';
+    if(STYLES.indexOf(p.style)<0)p.style='top';
+    if(MODES.indexOf(p.mode)<0)p.mode='link';
+  });
+}
+
+/* ---------- preset libraries ---------- */
+var PRESET_ICONS=[
+  {id:'terminal',name:'Terminal'},
+  {id:'code',name:'Code'},
+  {id:'cpu',name:'CPU'},
+  {id:'database',name:'Database'},
+  {id:'server',name:'Server'},
+  {id:'cloud',name:'Cloud'},
+  {id:'folder',name:'Folder'},
+  {id:'file-text',name:'Document'},
+  {id:'book',name:'Docs/Book'},
+  {id:'globe',name:'Web'},
+  {id:'link',name:'Link'},
+  {id:'settings',name:'Settings'},
+  {id:'briefcase',name:'Work'},
+  {id:'chart',name:'Analytics'},
+  {id:'sparkles',name:'AI/Sparkle'},
+  {id:'zap',name:'Fast/Zap'},
+  {id:'shield',name:'Security'},
+  {id:'music',name:'Music'},
+  {id:'video',name:'Media'},
+  {id:'camera',name:'Photos'},
+  {id:'gamepad',name:'Gaming'},
+  {id:'coffee',name:'Coffee'},
+  {id:'star',name:'Star'},
+  {id:'heart',name:'Favorites'},
+  {id:'mail',name:'Mail'},
+  {id:'compass',name:'Explore'}
+];
+var PRESET_GRADS=[
+  {id:'aurora',name:'Aurora'},
+  {id:'sunset',name:'Sunset'},
+  {id:'cyber',name:'Cyber'},
+  {id:'emerald',name:'Emerald'},
+  {id:'neon',name:'Neon'},
+  {id:'amber',name:'Warm Gold'},
+  {id:'ocean',name:'Ocean'},
+  {id:'slate',name:'Slate'}
+];
+var PRESET_PHOTOS=[
+  {name:'Workspace',url:'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=80'},
+  {name:'Code/Dev',url:'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=80'},
+  {name:'Minimal',url:'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=600&auto=format&fit=crop&q=80'},
+  {name:'Mountain',url:'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&auto=format&fit=crop&q=80'},
+  {name:'Cyberpunk',url:'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=600&auto=format&fit=crop&q=80'},
+  {name:'Forest',url:'https://images.unsplash.com/photo-1448375240586-882707db888b?w=600&auto=format&fit=crop&q=80'}
+];
+
+/* ---------- path handling ---------- */
+function toHref(p){
+  p=String(p||'').trim();if(!p)return'#';
+  if(/^(javascript|data|vbscript):/i.test(p))return'#';
+  if(/^(https?:|file:|mailto:)/i.test(p))return p;
+  if(/^\\\\/.test(p))return 'file:'+p.replace(/\\/g,'/');          /* UNC \\server\share */
+  if(/^[a-z]:[\\/]/i.test(p))return 'file:///'+p.replace(/\\/g,'/');/* C:\... */
+  if(p.charAt(0)==='/')return 'file://'+p;                          /* /home/... */
+  if(/^[^\s\\/]+\.[a-z]{2,}([/?#]|$)/i.test(p))return 'https://'+p; /* domain.com */
+  if(/^[a-z0-9+.-]+:/i.test(p))return'#';                         /* disallow unknown protocols */
+  return p; /* relative path — resolves next to this HTML file */
+}
+function isWeb(p){return /^(https?:|mailto:)/i.test(toHref(p))}
+function openPanel(p){
+  var raw=String(p.path||'').trim();
+  if(!raw){toast('This panel has no path yet — click the pencil to edit it',true);return}
+  var run=p.mode==='run';
+  var href;
+  if(run){
+    href=RUN_SCHEME+encodeURIComponent(raw.replace(/\\/g,'/'));
+  }else{
+    href=toHref(raw);
+    if(href==='#'){toast('This panel has an invalid or unsafe path — click the pencil to edit it',true);return}
+  }
+  var a=document.createElement('a');
+  a.href=href;
+  a.target=run?'_self':'_blank';
+  a.rel='noopener noreferrer';
+  document.body.appendChild(a);a.click();a.remove();
+  if(run)toast('Launching with PanelDeck Runner — if nothing happens, install the helper from Help');
+}
+
+/* ---------- rendering ---------- */
+function visible(){
+  var q=query.trim().toLowerCase();
+  if(!q)return state.panels;
+  return state.panels.filter(function(p){
+    return (p.name+' '+(p.desc||'')+' '+(p.path||'')).toLowerCase().indexOf(q)>=0;
+  });
+}
+function renderMedia(p,h){
+  if(!p.img){
+    return '<div class="ph" style="--h:'+h+'">'+esc((p.name||'?').trim().charAt(0).toUpperCase())+'</div>';
+  }
+  if(p.img.indexOf('icon:')===0){
+    var ic=p.img.slice(5);
+    return '<div class="ph ph-icon" style="--h:'+h+'"><svg class="ic-plate"><use href="#i-'+esc(ic)+'"/></svg></div>';
+  }
+  if(p.img.indexOf('grad:')===0){
+    var gr=p.img.slice(5);
+    return '<div class="ph grad-'+esc(gr)+'"></div>';
+  }
+  return '<img src="'+esc(p.img)+'" alt="" loading="lazy" draggable="false">';
+}
+function cardHTML(p){
+  var h=hueFor(p.name);
+  var icon=p.mode==='run'?'#i-play':(isWeb(p.path)?'#i-globe':'#i-folder');
+  var media=renderMedia(p,h);
+  return '<article class="card ly-'+esc(p.style)+' sz-'+esc(p.size)+'" style="--paccent:'+esc(accentOf(p))+'" '+
+    'draggable="true" data-id="'+esc(p.id)+'" tabindex="0" title="'+esc(p.path)+'">'+
+    '<div class="media">'+media+'</div>'+
+    '<div class="body">'+
+      '<h3>'+esc(p.name)+'</h3>'+
+      (p.desc?'<p class="desc">'+esc(p.desc)+'</p>':'')+
+      '<span class="plink"><svg class="ic"><use href="'+icon+'"/></svg><span>'+esc(p.path)+'</span></span>'+
+    '</div>'+
+    '<div class="tools">'+
+      '<button type="button" data-act="size" title="Cycle size" aria-label="Cycle size"><svg class="ic"><use href="#i-layout"/></svg></button>'+
+      '<button type="button" data-act="edit" title="Edit panel" aria-label="Edit panel"><svg class="ic"><use href="#i-edit"/></svg></button>'+
+      '<button type="button" data-act="del" title="Delete panel" aria-label="Delete panel"><svg class="ic"><use href="#i-trash"/></svg></button>'+
+    '</div>'+
+  '</article>';
+}
+function render(){
+  var list=visible();
+  $('#grid').innerHTML=list.map(cardHTML).join('');
+  $('#empty').style.display=state.panels.length?'none':'flex';
+  var showNoRes=(!state.panels.length||list.length)?false:true;
+  var noResEl=$('#noRes');
+  if(noResEl){
+    noResEl.style.display=showNoRes?'flex':'none';
+    if(showNoRes){
+      var qText=query.trim();
+      $('#noResQuery').textContent=qText;
+      $('#noResBtnQuery').textContent=qText;
+    }
+  }
+  $('#count').textContent=state.panels.length+(state.panels.length===1?' panel':' panels');
+  document.title=state.title;
+}
+function applyTheme(){
+  document.documentElement.dataset.theme=state.theme;
+  $('#iconSun').style.display=state.theme==='dark'?'':'none';
+  $('#iconMoon').style.display=state.theme==='dark'?'none':'';
+}
+
+/* ---------- grid interactions ---------- */
+$('#grid').addEventListener('click',function(e){
+  var btn=e.target.closest('.tools button');
+  var card=e.target.closest('.card');
+  if(!card)return;
+  var p=state.panels.find(function(x){return x.id===card.dataset.id});
+  if(!p)return;
+  if(btn){
+    var act=btn.dataset.act;
+    if(act==='edit')openModal(p);
+    else if(act==='del'){
+      if(confirm('Remove "'+p.name+'" from the dashboard?')){
+        state.panels=state.panels.filter(function(x){return x.id!==p.id});
+        save();render();toast('Panel removed');
+      }
+    }else if(act==='size'){
+      p.size=SIZES[(SIZES.indexOf(p.size)+1)%SIZES.length];
+      card.className='card ly-'+p.style+' sz-'+p.size;
+      save();
+    }
+    return;
+  }
+  openPanel(p);
+});
+$('#grid').addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('card')){
+    var p=state.panels.find(function(x){return x.id===e.target.dataset.id});
+    if(p)openPanel(p);
+  }
+});
+
+/* drag & drop reorder */
+$('#grid').addEventListener('dragstart',function(e){
+  if(query.trim()){e.preventDefault();toast('Clear the search box to rearrange panels',true);return}
+  var card=e.target.closest('.card');if(!card)return;
+  dragId=card.dataset.id;
+  card.classList.add('dragging');
+  e.dataTransfer.effectAllowed='move';
+  try{e.dataTransfer.setData('text/plain',dragId)}catch(_){}
+});
+$('#grid').addEventListener('dragover',function(e){
+  if(!dragId)return;
+  e.preventDefault();
+  var dragging=$('#grid .dragging');if(!dragging)return;
+  var target=getSwapTarget(e.clientX,e.clientY);
+  if(!target)$('#grid').appendChild(dragging);
+  else if(target!==dragging)$('#grid').insertBefore(dragging,target);
+});
+$('#grid').addEventListener('dragend',function(){
+  var card=$('#grid .dragging');if(card)card.classList.remove('dragging');
+  if(!dragId)return;
+  var order=$$('#grid .card').map(function(c){return c.dataset.id});
+  state.panels.sort(function(a,b){
+    return order.indexOf(a.id)-order.indexOf(b.id);
+  });
+  dragId=null;save();render();
+});
+function getSwapTarget(x,y){
+  var best=null,bd=Infinity;
+  $$('#grid .card:not(.dragging)').forEach(function(c){
+    var r=c.getBoundingClientRect();
+    var dx=x-(r.left+r.width/2),dy=y-(r.top+r.height/2);
+    var d=dx*dx+dy*dy;
+    if(d<bd){bd=d;best=c}
+  });
+  if(!best)return null;
+  var r=best.getBoundingClientRect();
+  var after=(y>r.top+r.height/2)||(y>=r.top&&y<=r.bottom&&x>r.left+r.width/2);
+  return after?best.nextSibling:best;
+}
+
+/* ---------- modal ---------- */
+/* ---------- modal & picture picker ---------- */
+function pillSel(sel,v){$$(sel+' .pill').forEach(function(b){b.classList.toggle('on',b.dataset.v===v)})}
+function pillVal(sel){var b=$(sel+' .pill.on');return b?b.dataset.v:$(sel+' .pill').dataset.v}
+
+function selectPicTab(tab){
+  $$('#picTabs .pic-tab').forEach(function(t){t.classList.toggle('on',t.dataset.tab===tab)});
+  $$('.pic-pane').forEach(function(p){p.classList.remove('on')});
+  var pane=$('#pane-'+tab);if(pane)pane.classList.add('on');
+}
+
+function updatePickerHighlights(){
+  $$('#iconGrid .icon-opt').forEach(function(el){
+    el.classList.toggle('selected',draftImg===('icon:'+el.dataset.icon));
+  });
+  $$('#gradGrid .swatch-opt').forEach(function(el){
+    el.classList.toggle('selected',draftImg===('grad:'+el.dataset.grad));
+  });
+  $$('#photoGrid .photo-opt').forEach(function(el){
+    el.classList.toggle('selected',draftImg===el.dataset.url);
+  });
+}
+
+function renderPreview(){
+  var prev=$('#imgPrev');
+  if(!draftImg){
+    var name=$('#fName').value.trim();
+    var h=hueFor(name||'New');
+    prev.innerHTML='<div class="ph" style="--h:'+h+'">'+esc((name||'?').charAt(0).toUpperCase())+'</div>';
+    updatePickerHighlights();
+    return;
+  }
+  if(draftImg.indexOf('icon:')===0){
+    var ic=draftImg.slice(5);
+    var col=$('#fAuto').checked?('hsl('+hueFor($('#fName').value.trim()||'New')+' 62% 55%)'):$('#fColor').value;
+    prev.innerHTML='<div class="ph ph-icon" style="--paccent:'+esc(col)+'"><svg class="ic-plate"><use href="#i-'+esc(ic)+'"/></svg></div>';
+  }else if(draftImg.indexOf('grad:')===0){
+    var gr=draftImg.slice(5);
+    prev.innerHTML='<div class="ph grad-'+esc(gr)+'"></div>';
+  }else{
+    prev.innerHTML='<img src="'+esc(draftImg)+'" alt="">';
+  }
+  updatePickerHighlights();
+}
+
+function initPicPicker(){
+  $('#iconGrid').innerHTML=PRESET_ICONS.map(function(item){
+    return '<button type="button" class="icon-opt" data-icon="'+esc(item.id)+'" title="'+esc(item.name)+'" aria-label="'+esc(item.name)+'"><svg class="ic"><use href="#i-'+esc(item.id)+'"/></svg></button>';
+  }).join('');
+
+  $('#gradGrid').innerHTML=PRESET_GRADS.map(function(item){
+    return '<button type="button" class="swatch-opt grad-'+esc(item.id)+'" data-grad="'+esc(item.id)+'" title="'+esc(item.name)+'" aria-label="'+esc(item.name)+'"><span>'+esc(item.name)+'</span></button>';
+  }).join('');
+
+  $('#photoGrid').innerHTML=PRESET_PHOTOS.map(function(item){
+    return '<button type="button" class="photo-opt" data-url="'+esc(item.url)+'" title="'+esc(item.name)+'" aria-label="'+esc(item.name)+'"><img src="'+esc(item.url)+'" alt="" loading="lazy"><span>'+esc(item.name)+'</span></button>';
+  }).join('');
+}
+
+function openModal(p){
+  editingId=p?p.id:null;
+  draftImg=p?(p.img||null):null;
+  $('#fName').value=p?p.name:'';
+  $('#fDesc').value=p?(p.desc||''):'';
+  $('#fPath').value=p?p.path:'';
+  $('#fImgUrl').value=(p&&p.img&&p.img.indexOf('data:')!==0&&p.img.indexOf('icon:')!==0&&p.img.indexOf('grad:')!==0)?p.img:'';
+  pillSel('#sizePills',p?(p.size||'sm'):'sm');
+  pillSel('#stylePills',p?(p.style||'top'):'top');
+  pillSel('#modePills',p?(p.mode||'link'):'link');
+  var auto=!(p&&p.accent);
+  $('#fAuto').checked=auto;
+  $('#fColor').value=(p&&p.accent)?p.accent:'#4f8cff';
+  $('#fColor').disabled=auto;
+
+  var activeTab='icons';
+  if(draftImg){
+    if(draftImg.indexOf('icon:')===0)activeTab='icons';
+    else if(draftImg.indexOf('grad:')===0)activeTab='gradients';
+    else if(PRESET_PHOTOS.some(function(ph){return ph.url===draftImg}))activeTab='photos';
+    else if(draftImg.indexOf('data:')===0)activeTab='upload';
+    else if(draftImg.indexOf('http')===0)activeTab='url';
+  }
+  selectPicTab(activeTab);
+  renderPreview();
+  $('#modalTitle').textContent=p?'Edit panel':'New panel';
+  $('#overlay').classList.add('open');
+  setTimeout(function(){$('#fName').focus()},60);
+}
+function closeModal(){
+  $('#overlay').classList.remove('open');
+  editingId=null;
+}
+$('#addBtn').addEventListener('click',function(){openModal(null)});
+$('#emptyAdd').addEventListener('click',function(){openModal(null)});
+$('#closeModal').addEventListener('click',closeModal);
+$('#cancelModal').addEventListener('click',closeModal);
+$('#overlay').addEventListener('mousedown',function(e){if(e.target.id==='overlay')closeModal()});
+$('#helpBtn').addEventListener('click',function(){$('#helpOverlay').classList.add('open')});
+$('#closeHelp').addEventListener('click',function(){$('#helpOverlay').classList.remove('open')});
+$('#closeHelp2').addEventListener('click',function(){$('#helpOverlay').classList.remove('open')});
+$('#helpOverlay').addEventListener('mousedown',function(e){if(e.target.id==='helpOverlay')e.target.classList.remove('open')});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    if($('#overlay').classList.contains('open'))closeModal();
+    $('#helpOverlay').classList.remove('open');
+  }
+});
+$('#sizePills').addEventListener('click',function(e){
+  var b=e.target.closest('.pill');if(b)pillSel('#sizePills',b.dataset.v);
+});
+$('#stylePills').addEventListener('click',function(e){
+  var b=e.target.closest('.pill');if(b)pillSel('#stylePills',b.dataset.v);
+});
+$('#modePills').addEventListener('click',function(e){
+  var b=e.target.closest('.pill');if(b)pillSel('#modePills',b.dataset.v);
+});
+$('#fAuto').addEventListener('change',function(){
+  $('#fColor').disabled=$('#fAuto').checked;
+  renderPreview();
+});
+$('#fColor').addEventListener('input',function(){
+  renderPreview();
+});
+$('#fName').addEventListener('input',function(){
+  if(!draftImg||draftImg.indexOf('icon:')===0)renderPreview();
+});
+$('#fPath').addEventListener('input',function(e){
+  var v=e.target.value.trim();
+  var exe=/\.(exe|bat|cmd|com|msi|ps1|vbs|lnk|jar|app|appref-ms|sh)$/i.test(v);
+  var h=$('#execHint');
+  h.style.display=exe?'block':'none';
+  if(exe)h.textContent='This looks like an executable or shortcut — set Click action to "Run file" to launch it (see Help for the one-time helper setup).';
+});
+
+/* picture selector interaction */
+$('#picTabs').addEventListener('click',function(e){
+  var b=e.target.closest('.pic-tab');if(b)selectPicTab(b.dataset.tab);
+});
+$('#iconGrid').addEventListener('click',function(e){
+  var b=e.target.closest('.icon-opt');if(!b)return;
+  draftImg='icon:'+b.dataset.icon;
+  $('#fImgUrl').value='';
+  renderPreview();
+});
+$('#gradGrid').addEventListener('click',function(e){
+  var b=e.target.closest('.swatch-opt');if(!b)return;
+  draftImg='grad:'+b.dataset.grad;
+  $('#fImgUrl').value='';
+  renderPreview();
+});
+$('#photoGrid').addEventListener('click',function(e){
+  var b=e.target.closest('.photo-opt');if(!b)return;
+  draftImg=b.dataset.url;
+  $('#fImgUrl').value=b.dataset.url;
+  renderPreview();
+});
+$('#fImgUrl').addEventListener('input',function(e){
+  draftImg=e.target.value.trim()||null;renderPreview();
+});
+$('#fRemoveImg').addEventListener('click',function(){
+  draftImg=null;$('#fImgUrl').value='';renderPreview();
+});
+$('#fImgFile').addEventListener('change',function(e){
+  var f=e.target.files[0];if(!f)return;
+  if(!/^image\//.test(f.type)){toast('Please choose an image file',true);e.target.value='';return}
+  fileToDataUrl(f).then(function(data){
+    draftImg=data;$('#fImgUrl').value='';renderPreview();
+  }).catch(function(){toast('Could not read that image',true)});
+  e.target.value='';
+});
+$('#form').addEventListener('submit',function(e){
+  e.preventDefault();
+  var name=$('#fName').value.trim();
+  var path=$('#fPath').value.trim();
+  if(!name||!path){toast('Name and link / path are required',true);return}
+  var data={
+    name:name,
+    desc:$('#fDesc').value.trim(),
+    path:path,
+    img:draftImg,
+    size:pillVal('#sizePills'),
+    style:pillVal('#stylePills'),
+    mode:pillVal('#modePills'),
+    accent:$('#fAuto').checked?'':$('#fColor').value
+  };
+  if(editingId){
+    var p=state.panels.find(function(x){return x.id===editingId});
+    if(p)Object.assign(p,data);
+    toast('Panel updated');
+  }else{
+    data.id=uid();
+    state.panels.push(data);
+    toast('Panel added');
+  }
+  save();render();closeModal();
+});
+
+/* uploaded image -> resized jpeg data url */
+function fileToDataUrl(file){
+  return new Promise(function(res,rej){
+    var r=new FileReader();
+    r.onerror=rej;
+    r.onload=function(){
+      var img=new Image();
+      img.onerror=rej;
+      img.onload=function(){
+        var M=480;
+        var s=Math.min(1,M/Math.max(img.width,img.height));
+        var w=Math.max(1,Math.round(img.width*s));
+        var h=Math.max(1,Math.round(img.height*s));
+        var c=document.createElement('canvas');
+        c.width=w;c.height=h;
+        var ctx=c.getContext('2d');
+        ctx.fillStyle='#ffffff';ctx.fillRect(0,0,w,h);
+        ctx.drawImage(img,0,0,w,h);
+        res(c.toDataURL('image/jpeg',0.75));
+      };
+      img.src=r.result;
+    };
+    r.readAsDataURL(file);
+  });
+}
+
+/* ---------- header tools ---------- */
+function openGoogleSearch(q){
+  q=String(q||'').trim();
+  if(!q)return;
+  var url='https://www.google.com/search?q='+encodeURIComponent(q);
+  window.open(url,'_blank','noopener,noreferrer');
+}
+
+var searchInput=$('#search');
+var searchClearBtn=$('#searchClear');
+var searchGoogleBtn=$('#searchGoogleBtn');
+var noResGoogleBtn=$('#noResGoogleBtn');
+
+function syncSearchClear(){
+  if(searchClearBtn)searchClearBtn.style.display=query.length?'inline-flex':'none';
+}
+
+searchInput.addEventListener('input',function(e){
+  query=e.target.value;
+  syncSearchClear();
+  render();
+});
+
+searchInput.addEventListener('keydown',function(e){
+  if(e.key==='Enter'){
+    e.preventDefault();
+    if(query.trim())openGoogleSearch(query.trim());
+    else toast('Type a query to search Google',true);
+  }else if(e.key==='Escape'){
+    if(query){
+      query='';
+      searchInput.value='';
+      syncSearchClear();
+      render();
+    }
+    searchInput.blur();
+  }
+});
+
+if(searchClearBtn){
+  searchClearBtn.addEventListener('click',function(){
+    query='';
+    searchInput.value='';
+    syncSearchClear();
+    render();
+    searchInput.focus();
+  });
+}
+
+if(searchGoogleBtn){
+  searchGoogleBtn.addEventListener('click',function(){
+    if(query.trim())openGoogleSearch(query.trim());
+    else searchInput.focus();
+  });
+}
+
+if(noResGoogleBtn){
+  noResGoogleBtn.addEventListener('click',function(){
+    if(query.trim())openGoogleSearch(query.trim());
+  });
+}
+
+$('#themeBtn').addEventListener('click',function(){
+  state.theme=state.theme==='dark'?'light':'dark';
+  save();applyTheme();
+});
+var titleEl=$('#appTitle');
+titleEl.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();titleEl.blur()}});
+titleEl.addEventListener('blur',function(){
+  var v=titleEl.textContent.trim()||'PanelDeck';
+  state.title=v;titleEl.textContent=v;save();document.title=v;
+});
+$('#exportBtn').addEventListener('click',function(){
+  var blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='paneldeck-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(function(){URL.revokeObjectURL(a.href)},2000);
+  toast('Backup downloaded');
+});
+$('#importBtn').addEventListener('click',function(){$('#importFile').click()});
+$('#importFile').addEventListener('change',function(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(){
+    try{
+      var s=JSON.parse(r.result);
+      if(!s||!Array.isArray(s.panels))throw new Error('bad');
+      if(state.panels.length&&!confirm('Replace the current dashboard with this backup?'))return;
+      state=Object.assign({title:'PanelDeck',theme:'dark',panels:[]},s);
+      normalize();
+      query='';$('#search').value='';
+      syncSearchClear();
+      save();render();applyTheme();
+      titleEl.textContent=state.title;
+      toast('Dashboard imported');
+    }catch(err){toast('Invalid backup file',true)}
+  };
+  r.readAsText(f);
+  e.target.value='';
+});
+$('#resetBtn').addEventListener('click',function(){
+  if(confirm('Delete ALL panels and reset the dashboard?')){
+    state.panels=[];save();render();
+    $('#helpOverlay').classList.remove('open');
+    toast('Dashboard reset');
+  }
+});
+
+/* ---------- PanelDeck Runner helper (Windows, optional) ---------- */
+var VBS_TEXT=String.raw`' PanelDeck Runner - launches files passed via deckrun: URLs
+Option Explicit
+Dim sh, fso, url, path, dir
+Set sh = CreateObject("WScript.Shell")
+Set fso = CreateObject("Scripting.FileSystemObject")
+If WScript.Arguments.Count = 0 Then WScript.Quit
+url = WScript.Arguments(0)
+If LCase(Left(url, 11)) = "deckrun://" Then url = Mid(url, 12)
+If LCase(Left(url, 8)) = "deckrun:" Then url = Mid(url, 9)
+path = URLDecode(url)
+path = Replace(path, "/", "\")
+If InStrRev(path, "\") > 0 Then
+  dir = Left(path, InStrRev(path, "\") - 1)
+  If fso.FolderExists(dir) Then sh.CurrentDirectory = dir
+End If
+If fso.FileExists(path) Then
+  sh.Run """" & path & """", 1, False
+Else
+  MsgBox "PanelDeck Runner could not find:" & vbCrLf & path, 48, "PanelDeck Runner"
+End If
+
+Function URLDecode(s)
+  Dim i, out, c
+  out = ""
+  i = 1
+  Do While i <= Len(s)
+    c = Mid(s, i, 1)
+    If c = "%" And i + 5 <= Len(s) And LCase(Mid(s, i + 1, 1)) = "u" Then
+      out = out & ChrW(CLng("&H" & Mid(s, i + 2, 4)))
+      i = i + 6
+    ElseIf c = "%" And i + 2 <= Len(s) Then
+      out = out & Chr(CLng("&H" & Mid(s, i + 1, 2)))
+      i = i + 3
+    ElseIf c = "+" Then
+      out = out & " "
+      i = i + 1
+    Else
+      out = out & c
+      i = i + 1
+    End If
+  Loop
+  URLDecode = out
+End Function
+`;
+var REG_TEXT=String.raw`Windows Registry Editor Version 5.00
+
+; Registers the deckrun: protocol for the current user (no admin rights needed).
+; Expects run.vbs to be saved as C:\Users\Public\PanelDeck\run.vbs
+
+[HKEY_CURRENT_USER\Software\Classes\deckrun]
+@="URL:PanelDeck Runner"
+"URL Protocol"=""
+
+[HKEY_CURRENT_USER\Software\Classes\deckrun\shell\open\command]
+@="\"C:\\Windows\\System32\\wscript.exe\" \"C:\\Users\\Public\\PanelDeck\\run.vbs\" \"%1\""
+`;
+function downloadText(name,text,mime){
+  var blob=new Blob([text],{type:mime||'text/plain'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download=name;
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(function(){URL.revokeObjectURL(a.href)},2000);
+}
+$('#dlVbs').addEventListener('click',function(){
+  downloadText('run.vbs',VBS_TEXT.replace(/\n/g,'\r\n'),'text/vbscript');
+  toast('Save run.vbs into C:\\Users\\Public\\PanelDeck on your computer');
+});
+$('#dlReg').addEventListener('click',function(){
+  downloadText('PanelDeckRunner.reg',REG_TEXT.replace(/\n/g,'\r\n'),'text/plain');
+  toast('After saving run.vbs, double-click this file and restart your browser');
+});
+
+/* ---------- examples ---------- */
+$('#loadExamples').addEventListener('click',function(){
+  var isWin=navigator.userAgent.indexOf('Win')>=0;
+  var isMac=/Mac|iPhone|iPad/.test(navigator.platform||navigator.userAgent);
+  var folder=isWin?'C:\\Users':(isMac?'/Users':'/home');
+  [
+    {name:'GitHub',desc:'Repositories, pull requests and code review',path:'https://github.com',size:'wide',style:'overlay',img:'icon:code',accent:'#2ea043'},
+    {name:'Wikipedia',desc:'The free encyclopedia — quick reference for everything',path:'https://wikipedia.org',size:'sm',style:'tile',img:'icon:globe',accent:'#3b82f6'},
+    {name:'MDN Web Docs',desc:'Documentation for HTML, CSS and JavaScript',path:'https://developer.mozilla.org',size:'sm',style:'side',img:'icon:book',accent:'#0284c7'},
+    {name:'My Files',desc:'Example local folder — click Edit to point it at your own path',path:folder,size:'tall',style:'overlay',img:'icon:folder',accent:'#f59e0b'},
+    {name:'Calculator',desc:'Example "Run file" panel — launches via the optional Windows helper (see Help)',path:'C:\\Windows\\System32\\calc.exe',size:'sm',style:'note',img:'icon:terminal',accent:'#8b5cf6',mode:'run'}
+  ].forEach(function(d){
+    d.id=uid();d.mode=d.mode||'link';
+    state.panels.push(d);
+  });
+  save();render();toast('Examples added — click the pencil on any panel to edit it');
+});
+
+/* ---------- init ---------- */
+initPicPicker();
+load();normalize();applyTheme();
+titleEl.textContent=state.title;
+render();
+})();
+</script>
+</body>
+</html>
