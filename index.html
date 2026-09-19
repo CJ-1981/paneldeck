@@ -300,7 +300,51 @@ html[data-theme="light"] .tools button:hover{background:rgba(0,0,0,.08)}
 .tools button.pin-active{color:var(--accent)}
 .tools .ic{width:13px;height:13px}
 
-.tools .ic{width:13px;height:13px}
+/* ---------- light theme card & glass adjustments ---------- */
+html[data-theme="light"] .ly-glass .media::after {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.25), rgba(230, 238, 250, 0.65));
+}
+html[data-theme="light"] .ly-glass .body {
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 10px 30px rgba(25, 40, 75, 0.1), var(--specular);
+}
+html[data-theme="light"] .ly-glass h3 { color: var(--text); }
+html[data-theme="light"] .ly-glass .desc { color: var(--muted); }
+html[data-theme="light"] .ly-glass .plink { color: var(--muted); }
+
+html[data-theme="light"] .ly-overlay .media::after {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 15%, rgba(240, 244, 250, 0.94) 80%);
+}
+html[data-theme="light"] .ly-overlay h3 { color: var(--text); }
+html[data-theme="light"] .ly-overlay .desc { color: var(--muted); }
+html[data-theme="light"] .ly-overlay .plink { color: var(--muted); }
+
+html[data-theme="light"] .ly-banner .media::after {
+  background: linear-gradient(90deg, rgba(240, 244, 250, 0.96), rgba(240, 244, 250, 0.78) 55%, rgba(255, 255, 255, 0.25));
+}
+html[data-theme="light"] .ly-banner h3 { color: var(--text); }
+html[data-theme="light"] .ly-banner .desc { color: var(--muted); }
+html[data-theme="light"] .ly-banner .plink { color: var(--muted); }
+
+html[data-theme="light"] .pin-badge {
+  background: color-mix(in srgb, var(--accent) 16%, rgba(255, 255, 255, 0.95));
+  box-shadow: 0 2px 10px var(--accent-glow);
+}
+
+html[data-theme="light"] .card:hover {
+  box-shadow: var(--specular), 0 14px 32px rgba(25, 40, 75, 0.12), 0 0 20px color-mix(in srgb, var(--paccent, #4f8cff) 20%, transparent);
+}
+html[data-theme="light"] .bento-grid.list-view .card:hover {
+  box-shadow: var(--specular), 0 6px 16px rgba(25, 40, 75, 0.08) !important;
+}
+html[data-theme="light"] .ly-tile .media {
+  box-shadow: 0 8px 20px rgba(25, 40, 75, 0.12);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+html[data-theme="light"] .ic-plate {
+  filter: drop-shadow(0 2px 6px rgba(25, 40, 75, 0.14));
+}
 
 /* ---------- empty state ---------- */
 #empty{display:none;flex-direction:column;align-items:center;gap:14px;padding:84px 20px;text-align:center;color:var(--muted)}
